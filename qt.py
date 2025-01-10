@@ -63,7 +63,7 @@ class SerialReaderApp(QWidget):
         super().__init__()
 
         self.init_ui()
-        self.serial_port = serial.Serial('COM7', 115200, timeout=1)  # Seri portu ayarla
+        self.serial_port = serial.Serial('COM7', 115200, timeout=0)  # Seri portu ayarla
         self.serial_thread = SerialThread(self.serial_port)
         self.serial_thread.new_data_signal.connect(self.update_display)
         self.serial_thread.start()
