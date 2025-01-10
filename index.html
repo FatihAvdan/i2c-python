@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Serial Communication with Electron</title>
+  </head>
+  <body>
+    <h1>Electron Seri Port Bağlantısı</h1>
+    <button id="startBtn">Seri Bağlantıyı Başlat</button>
+    <div id="output"></div>
+    <div id="output2"></div>
+
+    <script>
+      const { ipcRenderer } = require("electron");
+
+      let receivedData = [];
+      let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
+
+      ipcRenderer.on("serial-data", (event, data) => {
+        console.log("Gelen Veri:", data);
+
+        // / karakterine kadar olan veriyi geçici diziye ekle
+        for (let i = 0; i < data.length; i++) {
+          const byte = data[i];
+          //   console.log("Byte:", byte);
+
+          if (byte === "/") {
+            if (tempData.length > 0) {
+              // Veriyi işlemek için geçici diziyi kullan
+              //   console.log("tempData:", tempData);
+              let stringTempData = tempData.join(""); // "97"
+
+              // "97" bir karakter kodu olduğu için, bunu bir karakter olarak ele alalım
+              let charCode = parseInt(stringTempData, 10); // 97, sayısal değeri alıyoruz
+              // Şimdi, bu sayısal değerin karşılık geldiği hexadecimal değeri alıyoruz
+              let hexData = charCode.toString(16); // '61'
+              receivedData.push(hexData);
+              tempData = []; // Veriyi sıfırla
+            }
+          } else {
+            // / karakteri değilse, veriyi geçici diziye ekle
+            tempData.push(byte);
+          }
+        }
+        if (receivedData.length > 0 && receivedData[0] !== "1") {
+          receivedData = [];
+        }
+        // 18 veri oldugunda işlemleri yap
+        if (receivedData.length > 18) {
+          console.log("receivedData Silindi");
+          document.querySelector("#output2").innerHTML = `
+            <p>receivedData Silindi ${new Date().toLocaleTimeString()}</p>
+          `;
+          receivedData = [];
+        }
+        if (receivedData.length === 18) {
+          console.log("deniyom");
+          console.log("receivedData:", receivedData);
+          // Veriyi işleyelim
+          const priceDot = receivedData[2];
+          const volumeDot = receivedData[3];
+          const bcdAmount = receivedData.slice(6, 10);
+          const bcdVolume = receivedData.slice(11, 14);
+          const bcdUprice = receivedData.slice(15, 18);
+
+          //   console.log("bcdAmount:", bcdAmount);
+          //   console.log("bcdVolume:", bcdVolume);
+          //   console.log("bcdUprice:", bcdUprice);
+          const amount = bcdToInt(bcdAmount);
+          const volume = bcdToInt(bcdVolume);
+          const uprice = bcdToInt(bcdUprice);
+          const formattedPrice = formatPrice(uprice, priceDot);
+
+          // Ekranda gösterecek veriyi formatla
+          const sendData = {
+            amount: amount,
+            volume: volume,
+            price: formattedPrice,
+          };
+
+          document.querySelector("#output").innerHTML = `
+            <p>Amount: ${sendData.amount}</p>
+            <p>Volume: ${sendData.volume}</p>
+            <p>Price: ${sendData.price}</p>
+          `;
+
+          // Veriyi sıfırla
+          receivedData = [];
+        }
+      });
+
+      // BCD'den int'e dönüştürme fonksiyonu
+      function bcdToInt(bcdList) {
+        let result = bcdList.join("");
+        result = result.replaceAll("f", "0");
+        // console.log("result:", result);
+        // console.log("result:", parseInt(result));
+        return parseInt(result);
+      }
+
+      // Fiyat formatlama fonksiyonu
+      function formatPrice(price, priceDot) {
+        let priceStr = String(price);
+        priceDot = parseInt(priceDot);
+        if (priceDot > 0 && priceDot < priceStr.length) {
+          priceStr =
+            priceStr.slice(0, -priceDot) + "." + priceStr.slice(-priceDot);
+        }
+        return priceStr;
+      }
+
+      document.querySelector("#startBtn").addEventListener("click", () => {
+        ipcRenderer.send("start-serial");
+      });
+    </script>
+  </body>
+</html>

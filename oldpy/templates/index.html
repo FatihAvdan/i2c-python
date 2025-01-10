@@ -96,17 +96,43 @@
 
     <!-- <script src="./script/socket.io.min.js"></script> -->
     <script src="https://cdn.socket.io/4.7.0/socket.io.min.js"></script>
+
     <script>
+      var socket = io("http://127.0.0.1:5000");
+
+      socket.on("connect", function () {
+        console.log("Connected to the server");
+      });
+
+      socket.on("serial_data", function (data) {
+        console.log("Received serial data:", data);
+        if (data) {
+          document.getElementById("amount").innerText = data.amount;
+          document.getElementById("volume").innerText = data.volume;
+          document.getElementById("price").innerText = data.price;
+        }
+      });
+
+      socket.on("message", function (data) {
+        console.log("Received message:", data);
+      });
+    </script>
+
+    <!-- <script>
       // SocketIO sunucusuna bağlan
       var socket = io("http://127.0.0.1:5000"); // SocketIO server adresi
 
       socket.on("connect", function () {
         console.log("Connected to the server");
         socket.send("Hello from the client!"); // Sunucuya mesaj gönder
-        getSerialData();
+        // getSerialData();
+      });
+      socket.on("message", function (data) {
+        console.log("message is coming");
+        // getSerialData();
       });
 
-      socket.on("message", function (data) {
+      socket.on("serial_data", function (data) {
         console.log("Received:", data);
         console.log(data.amount);
         console.log(data.volume);
@@ -114,13 +140,13 @@
         document.getElementById("amount").innerText = data.amount;
         document.getElementById("volume").innerText = data.volume;
         document.getElementById("price").innerText = data.price;
-        getSerialData();
+        // getSerialData();
       });
 
-      const getSerialData = () => {
-        socket.emit("message", "i_want_serial_data");
-      };
-    </script>
+      // const getSerialData = () => {
+      //   socket.emit("i_want_serial_data", "i_want_serial_data");
+      // };
+    </script> -->
     <!-- <script>
       var price = 0;
       let interval;

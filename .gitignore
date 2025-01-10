@@ -1,2 +1,4 @@
-venv/
-v2/
+node_modules
+oldpy/venv
+oldpy/v2
+oldpy/__pycache__

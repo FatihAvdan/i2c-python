@@ -53,7 +53,6 @@ def serial_read():
                 }
                 print("sendData", sendData)
                 received_data.clear()
-                ser.b
                 return sendData
 # SocketIO olayları
 @sio.event

@@ -9,8 +9,13 @@ TEMPLATES_DIR = 'templates'
 
 def handle_serial_data(data):
     """Callback for serial data."""
-    print("Sending data to clients:", data)
-    sio.emit('serial_data', data)
+    try:
+        print("Sending data to clients:", data)
+        # Use the socket_handler's send_serial_data function instead of direct emit
+        from socket_handler import send_serial_data
+        send_serial_data(data)
+    except Exception as e:
+        print("Error sending serial data:", e)
 
 def start_webview():
     print("Starting Webview...")
