@@ -4,12 +4,111 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Serial Communication with Electron</title>
+    <!-- import font from local -->
+    <style>
+      @font-face {
+        font-family: "DS-DIGI";
+        src: url("assets/fonts/DS-DIGI.TTF") format("truetype");
+      }
+      html {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-color: #e9e9e9;
+      }
+      .h-screen {
+        height: 100vh;
+      }
+      .h33 {
+        height: 33%;
+      }
+      .h25 {
+        height: 25%;
+      }
+      .h8 {
+        height: 8%;
+        background-color: green;
+      }
+      .w-full {
+        width: 100%;
+      }
+      .h-50 {
+        height: 50%;
+      }
+      .total-price {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .total-price-text {
+        font-size: 150px;
+        font-weight: 600;
+        font-family: "DS-DIGI", sans-serif;
+        color: #121111;
+      }
+      .total-price::before {
+        content: "$";
+        font-size: 64px;
+        font-weight: bold;
+        font-family: "DS-DIGI", sans-serif;
+        margin-bottom: 15px;
+        margin-right: 10px;
+      }
+
+      .amount {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .amount-text {
+        font-size: 100px;
+        font-family: "DS-DIGI", sans-serif;
+        margin-bottom: 15px;
+        margin-right: 10px;
+      }
+      .amount-text::after {
+        content: "LT";
+        font-size: 56px;
+        font-weight: bold;
+        font-family: "DS-DIGI", sans-serif;
+        margin-bottom: 15px;
+        margin-left: 10px;
+      }
+      .ads {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #121111;
+        height: 100%;
+      }
+      .ads img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    </style>
   </head>
-  <body>
-    <h1>Electron Seri Port Bağlantısı</h1>
-    <button id="startBtn">Seri Bağlantıyı Başlat</button>
+  <body class="h-screen">
+    <div class="h25 w-full">
+      <div id="price-field" class="total-price h-50">
+        <span class="total-price-text" id="price-text">45.00</span>
+      </div>
+      <div id="amount-field" class="amount h-50">
+        <div class="amount-text" id="amount-text">14.568</div>
+      </div>
+    </div>
+    <div class="h33">
+      <div class="ads">
+        <img src="assets/images/ads.jpg" alt="ads" class="ads-img" />
+      </div>
+    </div>
+    <div class="h33"></div>
+    <div class="h8">D</div>
+    <!-- <button id="startBtn">Seri Bağlantıyı Başlat</button>
     <div id="output"></div>
-    <div id="output2"></div>
+    <div id="output2"></div> -->
 
     <script>
       const { ipcRenderer } = require("electron");
