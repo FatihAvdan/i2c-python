@@ -48,14 +48,11 @@ app.whenReady().then(() => {
 
       // Veriler tamlandıysa işle
       while (buffer.includes("START18") && buffer.includes("END18")) {
-        // console.log("buffer:", buffer);
         const startIdx = buffer.indexOf("START18");
         const endIdx = buffer.indexOf("END18") + 7; // "END18" uzunluğu 6 karakter
         const message = buffer.substring(startIdx, endIdx);
-        // console.log("message:", message);
         buffer = buffer.replace(message, ""); // İşlenen kısmı arabellekten çıkar
         let content = message.replace("START18:", "").replace(":END18", "");
-        console.log("content:", content);
         let receivedData = [];
         let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
         for (let i = 0; i < content.length; i++) {
@@ -80,9 +77,18 @@ app.whenReady().then(() => {
             tempData.push(byte);
           }
         }
-        console.log("receivedData:", receivedData);
 
-        const priceDot = receivedData[2];
+        const priceDot2 = receivedData[2];
+        let isAlert;
+        let priceDot;
+        if (priceDot2.length == 1) {
+          isAlert = false;
+          priceDot = priceDot2;
+        } else {
+          isAlert = true;
+          priceDot = priceDot2[1];
+        }
+
         const twoDots = receivedData[3];
         const volumeDot = twoDots[0];
         const amountDot = twoDots[1];
@@ -90,14 +96,16 @@ app.whenReady().then(() => {
         const bcdVolume = receivedData.slice(11, 14);
         const bcdUprice = receivedData.slice(15, 18);
 
-        console.log("priceDot:", priceDot);
-        console.log("volumeDot:", volumeDot);
-        console.log("bcdAmount:", bcdAmount);
-        console.log("bcdVolume:", bcdVolume);
-        console.log("bcdUprice:", bcdUprice);
+        // console.log("priceDot:", priceDot);
+        // console.log("volumeDot:", volumeDot);
+        // console.log("bcdAmount:", bcdAmount);
+        // console.log("bcdVolume:", bcdVolume);
+        // console.log("bcdUprice:", bcdUprice);
 
-        const amount = bcdToInt(bcdAmount);
-        const volume = bcdToInt(bcdVolume);
+        let amount = bcdToInt(bcdAmount);
+        amount = formatPrice(amount, amountDot);
+        let volume = bcdToInt(bcdVolume);
+        volume = formatPrice(volume, volumeDot);
         const uprice = bcdToInt(bcdUprice);
         const formattedPrice = formatPrice(uprice, priceDot);
 
@@ -105,23 +113,46 @@ app.whenReady().then(() => {
           amount: amount,
           volume: volume,
           price: formattedPrice,
+          isAlert: isAlert,
         };
 
         // console.log("sendData:", sendData);
-
-        // console.log("18 Byte Veri (Fiyat):", content);
-        console.log("serial-data", { data: content, type: "price" });
+        win.webContents.send("price-data", sendData);
+        // console.log("price-data", { data: sendData, type: "price" });
       }
 
       while (buffer.includes("START25") && buffer.includes("END25")) {
+        // console.log("buffer:", buffer);
         const startIdx = buffer.indexOf("START25");
         const endIdx = buffer.indexOf("END25") + 7; // "END25" uzunluğu 6 karakter
         const message = buffer.substring(startIdx, endIdx);
         buffer = buffer.replace(message, ""); // İşlenen kısmı arabellekten çıkar
+        let content = message.replace("START25:", "").replace(":END25", "");
+        content = content.slice(1, -1);
+        let receivedData = [];
+        let tempData = [];
+        for (let i = 0; i < content.length; i++) {
+          const byte = content[i];
+          //   console.log("Byte:", byte);
 
-        const content = message.replace("START25:", "").replace(":END25", "");
-        console.log("25 Byte Veri (Durum):", content);
-        console.log("serial-data", { data: content, type: "status" });
+          if (byte === "/") {
+            if (tempData.length > 0) {
+              let stringTempData = tempData.join("");
+              let asciiData = String.fromCharCode(stringTempData);
+              receivedData.push(asciiData);
+              tempData = []; // Veriyi sıfırla
+            }
+          } else {
+            // / karakteri değilse, veriyi geçici diziye ekle
+            tempData.push(byte);
+          }
+        }
+        receivedData = receivedData.slice(1, -1);
+        let messageData = receivedData.join("");
+        win.webContents.send("message-data", {
+          data: messageData,
+          type: "message",
+        });
       }
     });
 
@@ -137,11 +168,18 @@ app.on("window-all-closed", () => {
   }
 });
 function bcdToInt(bcdList) {
-  let result = bcdList.join("");
+  let result = bcdList;
+  for (let i = 0; i < result.length; i++) {
+    if (result[i].length == 1) {
+      result[i] = "f" + result[i];
+    }
+  }
+  result = result.join("");
   result = result.replaceAll("f", "0");
-  // console.log("result:", result);
-  // console.log("result:", parseInt(result));
-  return parseInt(result);
+  if (result.length == 1) {
+    result = "0" + result;
+  }
+  return result;
 }
 
 function formatPrice(price, priceDot) {

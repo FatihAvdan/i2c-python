@@ -32,7 +32,7 @@
       }
       .h8 {
         height: 8%;
-        background-color: green;
+        background-color: blue;
       }
       .w-full {
         width: 100%;
@@ -40,18 +40,18 @@
       .h-50 {
         height: 50%;
       }
-      .total-price {
+      .total-amount {
         display: flex;
         justify-content: center;
         align-items: center;
       }
-      .total-price-text {
+      .total-amount-text {
         font-size: 150px;
         font-weight: 600;
         font-family: "DS-DIGI", sans-serif;
         color: #121111;
       }
-      .total-price::before {
+      .total-amount::before {
         content: "$";
         font-size: 64px;
         font-weight: bold;
@@ -60,18 +60,18 @@
         margin-right: 10px;
       }
 
-      .amount {
+      .volume {
         display: flex;
         justify-content: center;
         align-items: center;
       }
-      .amount-text {
+      .volume-text {
         font-size: 100px;
         font-family: "DS-DIGI", sans-serif;
         margin-bottom: 15px;
         margin-right: 10px;
       }
-      .amount-text::after {
+      .volume-text::after {
         content: "LT";
         font-size: 56px;
         font-weight: bold;
@@ -87,9 +87,9 @@
       }
 
       .device-text-text {
-        font-size: 20px;
+        font-size: 36px;
         font-family: "DS-DIGI", sans-serif;
-        font-weight: bold;
+        /* font-weight: bold; */
         color: #121111;
         text-align: center;
       }
@@ -179,16 +179,14 @@
   </head>
   <body class="h-screen">
     <div class="h25 w-full">
-      <div id="price-field" class="total-price h-50">
-        <span class="total-price-text" id="price-text">45.00</span>
+      <div id="amount-field" class="total-amount h-50">
+        <span class="total-amount-text" id="amount-text">0.00</span>
       </div>
-      <div id="amount-field" class="amount">
-        <div class="amount-text" id="amount-text">14.568</div>
+      <div id="volume-field" class="volume">
+        <div class="volume-text" id="volume-text">0.00</div>
       </div>
       <div id="device-text-field" class="device-text-field">
-        <span class="device-text-text" id="device-text-text">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Itaque, ad?
-        </span>
+        <span class="device-text-text" id="device-text-text"> </span>
       </div>
     </div>
     <div class="h33">
@@ -201,7 +199,7 @@
         <div class="card regular">
           <h2>Regular</h2>
           <div class="price">
-            <p>Cash: <span>$3.129</span></p>
+            <p>Cash: <span class="one-price-text">$0.00</span></p>
             <!-- <p>Credit: <span>$3.229</span></p> -->
           </div>
           <p class="note">Price per gallon, all taxes included</p>
@@ -215,7 +213,7 @@
         <div class="card extra" id="extra-card">
           <h2>Extra</h2>
           <div class="price">
-            <p>Cash: <span>$3.429</span></p>
+            <p>Cash: <span class="one-price-text">$0.00</span></p>
             <!-- <p>Credit: <span>$3.529</span></p> -->
           </div>
           <p class="note">Price per gallon, all taxes included</p>
@@ -229,7 +227,7 @@
         <div class="card supreme" id="supreme-card">
           <h2>Supreme+</h2>
           <div class="price">
-            <p>Cash: <span>$3.729</span></p>
+            <p>Cash: <span class="one-price-text">$0.00</span></p>
             <!-- <p>Credit: <span>$3.829</span></p> -->
           </div>
           <p class="note">Price per gallon, all taxes included</p>
@@ -241,7 +239,7 @@
         </div>
       </div>
     </div>
-    <div class="h8">D</div>
+    <div class="h8"></div>
     <!-- <button id="startBtn">Seri Bağlantıyı Başlat</button>
     <div id="output"></div>
     <div id="output2"></div> -->
@@ -249,101 +247,18 @@
     <script>
       const { ipcRenderer } = require("electron");
 
-      let receivedData = [];
-      let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
-
-      ipcRenderer.on("serial-data", (event, data) => {
-        console.log("Gelen Veri:", data);
-
-        // / karakterine kadar olan veriyi geçici diziye ekle
-        for (let i = 0; i < data.length; i++) {
-          const byte = data[i];
-          //   console.log("Byte:", byte);
-
-          if (byte === "/") {
-            if (tempData.length > 0) {
-              // Veriyi işlemek için geçici diziyi kullan
-              //   console.log("tempData:", tempData);
-              let stringTempData = tempData.join(""); // "97"
-
-              // "97" bir karakter kodu olduğu için, bunu bir karakter olarak ele alalım
-              let charCode = parseInt(stringTempData, 10); // 97, sayısal değeri alıyoruz
-              // Şimdi, bu sayısal değerin karşılık geldiği hexadecimal değeri alıyoruz
-              let hexData = charCode.toString(16); // '61'
-              receivedData.push(hexData);
-              tempData = []; // Veriyi sıfırla
-            }
-          } else {
-            // / karakteri değilse, veriyi geçici diziye ekle
-            tempData.push(byte);
-          }
-        }
-        if (receivedData.length > 0 && receivedData[0] !== "1") {
-          receivedData = [];
-        }
-        // 18 veri oldugunda işlemleri yap
-        if (receivedData.length > 18) {
-          console.log("receivedData Silindi");
-          document.querySelector("#output2").innerHTML = `
-            <p>receivedData Silindi ${new Date().toLocaleTimeString()}</p>
-          `;
-          receivedData = [];
-        }
-        if (receivedData.length === 18) {
-          console.log("deniyom");
-          console.log("receivedData:", receivedData);
-          // Veriyi işleyelim
-          const priceDot = receivedData[2];
-          const volumeDot = receivedData[3];
-          const bcdAmount = receivedData.slice(6, 10);
-          const bcdVolume = receivedData.slice(11, 14);
-          const bcdUprice = receivedData.slice(15, 18);
-
-          //   console.log("bcdAmount:", bcdAmount);
-          //   console.log("bcdVolume:", bcdVolume);
-          //   console.log("bcdUprice:", bcdUprice);
-          const amount = bcdToInt(bcdAmount);
-          const volume = bcdToInt(bcdVolume);
-          const uprice = bcdToInt(bcdUprice);
-          const formattedPrice = formatPrice(uprice, priceDot);
-
-          // Ekranda gösterecek veriyi formatla
-          const sendData = {
-            amount: amount,
-            volume: volume,
-            price: formattedPrice,
-          };
-
-          document.querySelector("#output").innerHTML = `
-            <p>Amount: ${sendData.amount}</p>
-            <p>Volume: ${sendData.volume}</p>
-            <p>Price: ${sendData.price}</p>
-          `;
-
-          // Veriyi sıfırla
-          receivedData = [];
-        }
+      ipcRenderer.on("price-data", (event, data) => {
+        document.getElementById("amount-text").innerText = data.amount;
+        document.getElementById("volume-text").innerText = data.volume;
+        document.querySelectorAll(".one-price-text").forEach((element) => {
+          element.innerText = "$" + data.price;
+        });
       });
 
-      // BCD'den int'e dönüştürme fonksiyonu
-      function bcdToInt(bcdList) {
-        let result = bcdList.join("");
-        result = result.replaceAll("f", "0");
-        // console.log("result:", result);
-        // console.log("result:", parseInt(result));
-        return parseInt(result);
-      }
-
-      // Fiyat formatlama fonksiyonu
-      function formatPrice(price, priceDot) {
-        let priceStr = String(price);
-        priceDot = parseInt(priceDot);
-        if (priceDot > 0 && priceDot < priceStr.length) {
-          priceStr =
-            priceStr.slice(0, -priceDot) + "." + priceStr.slice(-priceDot);
-        }
-        return priceStr;
-      }
+      ipcRenderer.on("message-data", (event, data) => {
+        console.log("message-data", data);
+        document.getElementById("device-text-text").innerText = data.data;
+      });
 
       document.addEventListener("DOMContentLoaded", () => {
         ipcRenderer.send("start-serial");
