@@ -1,6 +1,6 @@
 import serial
 
-ser = serial.Serial("/dev/ttyUSB0",baudrate=115200,timeout=1)
+ser = serial.Serial("COM7", baudrate=115200, timeout=1)
 #ser = serial.Serial('/dev/serial0', 115200)
 #ser = serial.Serial('COM7', 115200)
 data = []

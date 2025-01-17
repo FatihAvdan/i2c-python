@@ -17,6 +17,9 @@
       }
       body {
         background-color: #e9e9e9;
+        margin: 0;
+        padding: 0;
+        font-family: "DS-DIGI", sans-serif;
       }
       .h-screen {
         height: 100vh;
@@ -76,17 +79,101 @@
         margin-bottom: 15px;
         margin-left: 10px;
       }
+
+      .device-text-field {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .device-text-text {
+        font-size: 20px;
+        font-family: "DS-DIGI", sans-serif;
+        font-weight: bold;
+        color: #121111;
+        text-align: center;
+      }
       .ads {
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: #121111;
         height: 100%;
       }
       .ads img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+      }
+
+      .card-container {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+      }
+
+      .card {
+        width: 150px;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        color: white;
+      }
+
+      .card h2 {
+        margin: 0;
+        font-size: 1.5em;
+      }
+
+      .price {
+        margin: 15px 0;
+      }
+
+      .price p {
+        margin: 5px 0;
+        font-size: 1.1em;
+      }
+
+      .price span {
+        font-weight: bold;
+      }
+
+      .note {
+        font-size: 0.9em;
+        margin: 10px 0;
+        color: rgba(255, 255, 255, 1);
+        font-family: "DS-DIGI", sans-serif;
+        font-weight: bold;
+      }
+
+      .octane {
+        background-color: #e5a601;
+        border: 2px solid #121111;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+        border-radius: 5px;
+        padding: 10px;
+      }
+
+      .octane h3 {
+        margin: 5px 0;
+        font-size: 4em;
+        color: #121111;
+      }
+
+      /* Colors for each card */
+      .regular {
+        background-color: #0044cc;
+      }
+
+      .extra {
+        background-color: #0073e6;
+      }
+
+      .supreme {
+        background-color: #cc0000;
       }
     </style>
   </head>
@@ -95,8 +182,13 @@
       <div id="price-field" class="total-price h-50">
         <span class="total-price-text" id="price-text">45.00</span>
       </div>
-      <div id="amount-field" class="amount h-50">
+      <div id="amount-field" class="amount">
         <div class="amount-text" id="amount-text">14.568</div>
+      </div>
+      <div id="device-text-field" class="device-text-field">
+        <span class="device-text-text" id="device-text-text">
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Itaque, ad?
+        </span>
       </div>
     </div>
     <div class="h33">
@@ -104,7 +196,51 @@
         <img src="assets/images/ads.jpg" alt="ads" class="ads-img" />
       </div>
     </div>
-    <div class="h33"></div>
+    <div class="h33">
+      <div class="card-container">
+        <div class="card regular">
+          <h2>Regular</h2>
+          <div class="price">
+            <p>Cash: <span>$3.129</span></p>
+            <!-- <p>Credit: <span>$3.229</span></p> -->
+          </div>
+          <p class="note">Price per gallon, all taxes included</p>
+          <div class="octane">
+            <p>Minimum Octane Rating</p>
+            <h3>87</h3>
+          </div>
+          <p class="note octane">Press for Select</p>
+        </div>
+
+        <div class="card extra" id="extra-card">
+          <h2>Extra</h2>
+          <div class="price">
+            <p>Cash: <span>$3.429</span></p>
+            <!-- <p>Credit: <span>$3.529</span></p> -->
+          </div>
+          <p class="note">Price per gallon, all taxes included</p>
+          <div class="octane">
+            <p>Minimum Octane Rating</p>
+            <h3>89</h3>
+          </div>
+          <p class="note octane">Press for Select</p>
+        </div>
+
+        <div class="card supreme" id="supreme-card">
+          <h2>Supreme+</h2>
+          <div class="price">
+            <p>Cash: <span>$3.729</span></p>
+            <!-- <p>Credit: <span>$3.829</span></p> -->
+          </div>
+          <p class="note">Price per gallon, all taxes included</p>
+          <div class="octane">
+            <p>Minimum Octane Rating</p>
+            <h3>93</h3>
+          </div>
+          <p class="note octane">Press for Select</p>
+        </div>
+      </div>
+    </div>
     <div class="h8">D</div>
     <!-- <button id="startBtn">Seri Bağlantıyı Başlat</button>
     <div id="output"></div>
@@ -209,7 +345,7 @@
         return priceStr;
       }
 
-      document.querySelector("#startBtn").addEventListener("click", () => {
+      document.addEventListener("DOMContentLoaded", () => {
         ipcRenderer.send("start-serial");
       });
     </script>
