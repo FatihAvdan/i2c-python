@@ -2,11 +2,29 @@
   "name": "electron-serialport",
   "version": "1.0.0",
   "main": "main.js",
+  "description": "Electron Serial Port",
+  "author": "Fatih",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder"
   },
   "dependencies": {
-    "electron": "^latest_version",
-    "serialport": "^latest_version"
+    "serialport": "10.0.0"
+  },
+  "devDependencies": {
+    "electron-builder": "^25.1.8",
+    "electron": "25.0.0"
+  },
+  "build": {
+    "appId": "com.fatih.app",
+    "productName": "Fatih",
+    "linux": {
+      "target": {
+        "target": "deb",
+        "arch": [
+          "armv7l"
+        ]
+      }
+    }
   }
 }
