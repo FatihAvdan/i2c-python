@@ -121,13 +121,13 @@ app.whenReady().then(() => {
         // console.log("price-data", { data: sendData, type: "price" });
       }
 
-      while (buffer.includes("START25") && buffer.includes("END25")) {
+      while (buffer.includes("START26") && buffer.includes("END26")) {
         // console.log("buffer:", buffer);
-        const startIdx = buffer.indexOf("START25");
-        const endIdx = buffer.indexOf("END25") + 7; // "END25" uzunluğu 6 karakter
+        const startIdx = buffer.indexOf("START26");
+        const endIdx = buffer.indexOf("END26") + 7; // "END26" uzunluğu 6 karakter
         const message = buffer.substring(startIdx, endIdx);
         buffer = buffer.replace(message, ""); // İşlenen kısmı arabellekten çıkar
-        let content = message.replace("START25:", "").replace(":END25", "");
+        let content = message.replace("START26:", "").replace(":END26", "");
         content = content.slice(1, -1);
         let receivedData = [];
         let tempData = [];
