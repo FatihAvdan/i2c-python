@@ -30,17 +30,6 @@ app.whenReady().then(() => {
       console.log("Seri port açıldı: COM7");
     });
 
-    // port.on("data", (data) => {
-    //   console.log("Gelen Veri:", data.toString());
-    //   const recieved = data.toString().trim();
-    //   console.log(recieved.length);
-    //   // Web sayfasına veri gönderme
-    //   const response = {
-    //     data: data.toString(),
-    //     type: "price",
-    //   };
-    //   win.webContents.send("serial-data", response);
-    // });
     let buffer = ""; // Gelen veriler için bir arabellek
 
     port.on("data", (data) => {
