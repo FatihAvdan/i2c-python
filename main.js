@@ -122,7 +122,6 @@ app.whenReady().then(() => {
         let tempData = [];
         for (let i = 0; i < content.length; i++) {
           const byte = content[i];
-          //   console.log("Byte:", byte);
 
           if (byte === "/") {
             if (tempData.length > 0) {
