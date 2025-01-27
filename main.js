@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
-var SerialPort = require("serialport").SerialPort;
+var SerialPort = require("serialport");
 const path = require("path");
 
 let win;
@@ -24,7 +24,7 @@ app.whenReady().then(() => {
 
   ipcMain.on("start-serial", () => {
     // Seri portu başlatıyoruz
-    port = new SerialPort({ path: "COM7", baudRate: 115200 });
+    port = new SerialPort("COM9", { baudRate: 115200 });
 
     port.on("open", () => {
       console.log("Seri port açıldı: COM7");
@@ -34,7 +34,7 @@ app.whenReady().then(() => {
 
     port.on("data", (data) => {
       buffer += data.toString(); // Gelen veriyi arabelleğe ekle
-
+      // console.log("buffer:", buffer);
       // Veriler tamlandıysa işle
       while (buffer.includes("START18") && buffer.includes("END18")) {
         const startIdx = buffer.indexOf("START18");
@@ -147,6 +147,11 @@ app.whenReady().then(() => {
     port.on("error", (err) => {
       console.error("Seri port hatası:", err);
     });
+  });
+
+  ipcMain.on("write-serial", (event, data) => {
+    console.log("write-serial", data);
+    port.write(data);
   });
 });
 
