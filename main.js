@@ -5,6 +5,7 @@ const fs = require("fs");
 const drivelist = require("drivelist");
 let win;
 let port;
+let retryInterval = null;
 
 function createWindow() {
   win = new BrowserWindow({
@@ -33,13 +34,101 @@ app.whenReady().then(() => {
 
   ipcMain.on("start-serial", () => {
     // Seri portu başlatıyoruz
-    port = new SerialPort("COM9", { baudRate: 115200 });
+    startSerialPort();
+  });
 
+  ipcMain.on("write-serial", (event, data) => {
+    console.log("write-serial", data);
+    port.write(data);
+  });
+});
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
+});
+function bcdToInt(bcdList) {
+  let result = bcdList;
+  for (let i = 0; i < result.length; i++) {
+    if (result[i].length == 1) {
+      result[i] = "f" + result[i];
+    }
+  }
+  result = result.join("");
+  result = result.replaceAll("f", "0");
+  if (result.length == 1) {
+    result = "0" + result;
+  }
+  return result;
+}
+
+function formatPrice(price, priceDot) {
+  let priceStr = String(price);
+  priceDot = parseInt(priceDot);
+  if (priceDot > 0 && priceDot < priceStr.length) {
+    priceStr = priceStr.slice(0, -priceDot) + "." + priceStr.slice(-priceDot);
+  }
+  return priceStr;
+}
+
+// Windows & Mac için USB kontrolü
+async function findVideoFile() {
+  const drives = await drivelist.list();
+  for (const drive of drives) {
+    if (drive.isUSB) {
+      const usbPath = drive.mountpoints[0]?.path;
+      if (usbPath) {
+        const videoPath = path.join(usbPath, "video.mp4");
+        if (fs.existsSync(videoPath)) {
+          return videoPath;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+// Linux için özel USB tarama fonksiyonu
+function findLinuxUSB() {
+  try {
+    const result = execSync(
+      "lsblk -o MOUNTPOINT,RM | grep ' 1' | awk '{print $1}'"
+    )
+      .toString()
+      .trim();
+    if (result) {
+      const videoPath = path.join(result, "video.mp4");
+      if (fs.existsSync(videoPath)) {
+        console.log("videoPath:", videoPath);
+        return videoPath;
+      }
+    }
+  } catch (err) {
+    console.error("USB bulunamadı:", err);
+  }
+  return null;
+}
+
+function startSerialPort() {
+  const portName = "COM9"; // Bağlantı yapılacak seri port ismi
+  const baudRate = 115200;
+
+  try {
+    // Seri portu başlatıyoruz
+    port = new SerialPort(portName, { baudRate });
+
+    // Port açıldığında
     port.on("open", () => {
-      console.log("Seri port açıldı: COM7");
+      // console.log(`Seri port açıldı: ${portName}`);
+      // Başarılı bağlantı durumunda arka plandaki denemeyi durdur
+      clearInterval(retryInterval);
+      if (win)
+        win.webContents.send("message-data", {
+          data: `Seri port ${portName} başarıyla açıldı.`,
+          type: "message",
+        });
     });
-
-    let buffer = ""; // Gelen veriler için bir arabellek
 
     port.on("data", (data) => {
       buffer += data.toString(); // Gelen veriyi arabelleğe ekle
@@ -153,81 +242,33 @@ app.whenReady().then(() => {
       }
     });
 
+    // Hata durumunda yeniden bağlantı denemek için interval başlat
     port.on("error", (err) => {
-      console.error("Seri port hatası:", err);
+      // console.error("Seri port hatası:", err.message);
+      if (win)
+        win.webContents.send("message-data", {
+          data: `Seri port hatası: ${err.message}`,
+          type: "message",
+        });
+
+      // Yeniden denemek için intervali başlat
+      if (!retryInterval) {
+        retryInterval = setInterval(() => {
+          win.webContents.send("message-data", {
+            data: `Bağlantı sağlanamadı, yeniden denemeye başlanıyor...`,
+            type: "message",
+          });
+          // console.log(`Bağlantı sağlanamadı, yeniden denemeye başlanıyor...`);
+          startSerialPort(); // Tekrar dene
+        }, 5000); // 5 saniyede bir dene
+      }
     });
-  });
-
-  ipcMain.on("write-serial", (event, data) => {
-    console.log("write-serial", data);
-    port.write(data);
-  });
-});
-
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
-function bcdToInt(bcdList) {
-  let result = bcdList;
-  for (let i = 0; i < result.length; i++) {
-    if (result[i].length == 1) {
-      result[i] = "f" + result[i];
-    }
-  }
-  result = result.join("");
-  result = result.replaceAll("f", "0");
-  if (result.length == 1) {
-    result = "0" + result;
-  }
-  return result;
-}
-
-function formatPrice(price, priceDot) {
-  let priceStr = String(price);
-  priceDot = parseInt(priceDot);
-  if (priceDot > 0 && priceDot < priceStr.length) {
-    priceStr = priceStr.slice(0, -priceDot) + "." + priceStr.slice(-priceDot);
-  }
-  return priceStr;
-}
-
-// Windows & Mac için USB kontrolü
-async function findVideoFile() {
-  const drives = await drivelist.list();
-  for (const drive of drives) {
-    if (drive.isUSB) {
-      const usbPath = drive.mountpoints[0]?.path;
-      if (usbPath) {
-        const videoPath = path.join(usbPath, "video.mp4");
-        if (fs.existsSync(videoPath)) {
-          console.log("videoPath:", videoPath);
-          return videoPath;
-        }
-      }
-    }
-  }
-  return null;
-}
-
-// Linux için özel USB tarama fonksiyonu
-function findLinuxUSB() {
-  try {
-    const result = execSync(
-      "lsblk -o MOUNTPOINT,RM | grep ' 1' | awk '{print $1}'"
-    )
-      .toString()
-      .trim();
-    if (result) {
-      const videoPath = path.join(result, "video.mp4");
-      if (fs.existsSync(videoPath)) {
-        console.log("videoPath:", videoPath);
-        return videoPath;
-      }
-    }
   } catch (err) {
-    console.error("USB bulunamadı:", err);
+    // console.error("Seri port bağlantısı başarısız:", err);
+    if (win)
+      win.webContents.send("message-data", {
+        data: "Seri port bağlantısı başarısız.",
+        type: "message",
+      });
   }
-  return null;
 }
