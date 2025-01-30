@@ -1,7 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 var SerialPort = require("serialport");
 const path = require("path");
-
+const fs = require("fs");
+const drivelist = require("drivelist");
 let win;
 let port;
 
@@ -21,6 +22,14 @@ function createWindow() {
 
 app.whenReady().then(() => {
   createWindow();
+
+  ipcMain.handle("check-usb", async () => {
+    let videoPath = await findVideoFile();
+    if (!videoPath) {
+      videoPath = findLinuxUSB(); // Linux için özel tarama
+    }
+    return videoPath;
+  });
 
   ipcMain.on("start-serial", () => {
     // Seri portu başlatıyoruz
@@ -182,4 +191,43 @@ function formatPrice(price, priceDot) {
     priceStr = priceStr.slice(0, -priceDot) + "." + priceStr.slice(-priceDot);
   }
   return priceStr;
+}
+
+// Windows & Mac için USB kontrolü
+async function findVideoFile() {
+  const drives = await drivelist.list();
+  for (const drive of drives) {
+    if (drive.isUSB) {
+      const usbPath = drive.mountpoints[0]?.path;
+      if (usbPath) {
+        const videoPath = path.join(usbPath, "video.mp4");
+        if (fs.existsSync(videoPath)) {
+          console.log("videoPath:", videoPath);
+          return videoPath;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+// Linux için özel USB tarama fonksiyonu
+function findLinuxUSB() {
+  try {
+    const result = execSync(
+      "lsblk -o MOUNTPOINT,RM | grep ' 1' | awk '{print $1}'"
+    )
+      .toString()
+      .trim();
+    if (result) {
+      const videoPath = path.join(result, "video.mp4");
+      if (fs.existsSync(videoPath)) {
+        console.log("videoPath:", videoPath);
+        return videoPath;
+      }
+    }
+  } catch (err) {
+    console.error("USB bulunamadı:", err);
+  }
+  return null;
 }

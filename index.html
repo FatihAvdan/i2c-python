@@ -6,10 +6,6 @@
     <title>Serial Communication with Electron</title>
     <!-- import font from local -->
     <style>
-      @font-face {
-        font-family: "DS-DIGI";
-        src: url("assets/fonts/DS-DIGI.TTF") format("truetype");
-      }
       html {
         box-sizing: border-box;
         margin: 0;
@@ -19,7 +15,7 @@
         background-color: #e9e9e9;
         margin: 0;
         padding: 0;
-        font-family: "DS-DIGI", sans-serif;
+        font-family: "Arial", sans-serif;
       }
       .h-screen {
         height: 100vh;
@@ -48,14 +44,14 @@
       .total-amount-text {
         font-size: 150px;
         font-weight: 600;
-        font-family: "DS-DIGI", sans-serif;
+        font-family: "Arial", sans-serif;
         color: #121111;
       }
       .total-amount::before {
         content: "$";
         font-size: 64px;
         font-weight: bold;
-        font-family: "DS-DIGI", sans-serif;
+        font-family: "Arial", sans-serif;
         margin-bottom: 15px;
         margin-right: 10px;
       }
@@ -67,7 +63,7 @@
       }
       .volume-text {
         font-size: 100px;
-        font-family: "DS-DIGI", sans-serif;
+        font-family: "Arial", sans-serif;
         margin-bottom: 15px;
         margin-right: 10px;
       }
@@ -75,7 +71,7 @@
         content: "LT";
         font-size: 56px;
         font-weight: bold;
-        font-family: "DS-DIGI", sans-serif;
+        font-family: "Arial", sans-serif;
         margin-bottom: 15px;
         margin-left: 10px;
       }
@@ -88,7 +84,7 @@
 
       .device-text-text {
         font-size: 36px;
-        font-family: "DS-DIGI", sans-serif;
+        font-family: "Arial", sans-serif;
         /* font-weight: bold; */
         color: #121111;
         text-align: center;
@@ -98,6 +94,11 @@
         justify-content: center;
         align-items: center;
         height: 100%;
+      }
+      .ads video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
       .ads img {
         width: 100%;
@@ -175,72 +176,26 @@
       .supreme {
         background-color: #cc0000;
       }
+    </style>
 
-      .modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-      }
-
-      .modal-content {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        width: 300px;
-      }
-
-      .numpad-display {
-        margin-bottom: 20px;
-      }
-
-      .numpad-display input {
-        width: 100%;
-        padding: 10px;
-        font-size: 24px;
-        text-align: right;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-family: "DS-DIGI", sans-serif;
-      }
-
-      .numpad-grid {
+    <style>
+      .numpad {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 10px;
+        max-width: 200px;
+        margin: 0 auto;
       }
-
-      .numpad-btn {
-        padding: 15px;
-        font-size: 20px;
-        border: none;
-        background-color: #f0f0f0;
-        border-radius: 5px;
-        cursor: pointer;
-        font-family: "DS-DIGI", sans-serif;
-      }
-
-      .numpad-btn:hover {
-        background-color: #e0e0e0;
-      }
-
-      .numpad-btn.enter {
-        grid-column: span 3;
-        background-color: #4caf50;
-        color: white;
-      }
-
-      .numpad-btn.clear {
-        background-color: #ff9800;
-        color: white;
+      .numpad button {
+        padding: 20px;
+        font-size: 18px;
       }
     </style>
+    <link
+      rel="stylesheet"
+      href="./node_modules/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <script src="renderer.js"></script>
   </head>
   <body class="h-screen">
     <div class="h25 w-full">
@@ -252,7 +207,7 @@
           >0.00</span
         >
         <!-- go to serial-write.html -->
-        <a href="serial-write.html">Write Serial</a>
+        <!-- <a href="serial-write.html">Write Serial</a> -->
       </div>
       <div id="volume-field" class="volume">
         <div class="volume-text" id="volume-text" style="max-width: 100px">
@@ -265,12 +220,32 @@
     </div>
     <div class="h33">
       <div class="ads">
-        <img src="assets/images/ads.jpg" alt="ads" class="ads-img" />
+        <video
+          id="videoPlayer"
+          width="600"
+          autoplay
+          loop
+          muted
+          style="display: none"
+        >
+          <source id="videoSource" src="" type="video/mp4" />
+          Tarayıcınız video etiketini desteklemiyor.
+        </video>
+        <img
+          src="assets/images/ads.jpg"
+          alt="ads"
+          id="ads-img"
+          class="ads-img"
+        />
       </div>
     </div>
     <div class="h33">
       <div class="card-container">
-        <div class="card regular" onclick="openPriceModal()">
+        <div
+          class="card regular"
+          id="regular-card"
+          data-selected-product="Regular"
+        >
           <h2>Regular</h2>
           <div class="price">
             <p>Cash: <span class="one-price-text">$0.00</span></p>
@@ -283,7 +258,7 @@
           <p class="note octane">Press for Select</p>
         </div>
 
-        <div class="card extra" id="extra-card">
+        <div class="card extra" id="extra-card" data-selected-product="Extra">
           <h2>Extra</h2>
           <div class="price">
             <p>Cash: <span class="one-price-text">$0.00</span></p>
@@ -296,7 +271,11 @@
           <p class="note octane">Press for Select</p>
         </div>
 
-        <div class="card supreme" id="supreme-card">
+        <div
+          class="card supreme"
+          id="supreme-card"
+          data-selected-product="Supreme"
+        >
           <h2>Supreme+</h2>
           <div class="price">
             <p>Cash: <span class="one-price-text">$0.00</span></p>
@@ -313,36 +292,60 @@
     </div>
     <div class="h8"></div>
 
-    <!-- Price numpad modal -->
-    <div id="priceModal" class="modal" style="display: none">
-      <div class="modal-content">
-        <div class="numpad-display">
-          <input type="text" id="priceInput" readonly value="0.00" />
-        </div>
-        <div class="numpad-grid">
-          <button class="numpad-btn">7</button>
-          <button class="numpad-btn">8</button>
-          <button class="numpad-btn">9</button>
-          <button class="numpad-btn">4</button>
-          <button class="numpad-btn">5</button>
-          <button class="numpad-btn">6</button>
-          <button class="numpad-btn">1</button>
-          <button class="numpad-btn">2</button>
-          <button class="numpad-btn">3</button>
-          <button class="numpad-btn">0</button>
-          <button class="numpad-btn">.</button>
-          <button class="numpad-btn clear">C</button>
-          <button class="numpad-btn enter">Enter</button>
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="numPad"
+      tabindex="-1"
+      aria-labelledby="numPadLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="numPadLabel"></h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Kapat"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="numpad">
+              <button data-value="1">1</button>
+              <button data-value="2">2</button>
+              <button data-value="3">3</button>
+              <button data-value="P1">P1</button>
+              <button data-value="4">4</button>
+              <button data-value="5">5</button>
+              <button data-value="6">6</button>
+              <button data-value="P2">P2</button>
+              <button data-value="7">7</button>
+              <button data-value="8">8</button>
+              <button data-value="9">9</button>
+              <button data-value="P3">P3</button>
+              <button data-value="C">C</button>
+              <button data-value="0">0</button>
+              <button data-value="preset">Preset</button>
+              <button data-value="menu">Menu</button>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Kapat
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
     <script>
       const { ipcRenderer } = require("electron");
-
-      function openPriceModal() {
-        document.getElementById("priceModal").style.display = "block";
-      }
 
       ipcRenderer.on("price-data", (event, data) => {
         document.getElementById("amount-text").innerText = data.amount;
@@ -357,48 +360,45 @@
         document.getElementById("device-text-text").innerText = data.data;
       });
 
+      const audio = new Audio("keyboard.mp3"); // Path to your sound file
+
+      document.querySelectorAll(".numpad button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const value = button.getAttribute("data-value");
+          ipcRenderer.send("write-serial", value);
+          audio.currentTime = 0; // Rewind to the start
+          audio.play(); // Play the sound
+        });
+      });
+
       document.addEventListener("DOMContentLoaded", () => {
         ipcRenderer.send("start-serial");
+      });
+    </script>
 
-        // Numpad functionality
-        const modal = document.getElementById("priceModal");
-        const priceInput = document.getElementById("priceInput");
-        let currentValue = "0.00";
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".card").forEach((card) => {
+          card.addEventListener("click", function () {
+            // Tıklanan card'ın data-product değerini al
+            let selectedProduct = this.getAttribute("data-selected-product");
 
-        document.querySelectorAll(".numpad-btn").forEach((button) => {
-          button.addEventListener("click", () => {
-            const value = button.textContent;
+            // Modal içeriğini değiştir
+            document.getElementById("numPadLabel").textContent =
+              selectedProduct;
 
-            if (value === "C") {
-              currentValue = "0.00";
-            } else if (value === "Enter") {
-              // Handle price submission here
-              modal.style.display = "none";
-              // You can emit an event to the main process here
-              ipcRenderer.send("price-update", currentValue);
-            } else if (value === ".") {
-              if (!currentValue.includes(".")) {
-                currentValue += ".";
-              }
-            } else {
-              if (currentValue === "0.00") {
-                currentValue = value;
-              } else {
-                currentValue += value;
-              }
-            }
-
-            priceInput.value = currentValue;
+            // Bootstrap modal'ı aç
+            let productModal = new bootstrap.Modal(
+              document.getElementById("numPad")
+            );
+            productModal.show();
           });
-        });
-
-        // Close modal when clicking outside
-        modal.addEventListener("click", (e) => {
-          if (e.target === modal) {
-            modal.style.display = "none";
-          }
         });
       });
     </script>
+    <script
+      src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+      defer
+    ></script>
   </body>
 </html>
