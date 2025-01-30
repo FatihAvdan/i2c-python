@@ -175,6 +175,71 @@
       .supreme {
         background-color: #cc0000;
       }
+
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .modal-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        width: 300px;
+      }
+
+      .numpad-display {
+        margin-bottom: 20px;
+      }
+
+      .numpad-display input {
+        width: 100%;
+        padding: 10px;
+        font-size: 24px;
+        text-align: right;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-family: "DS-DIGI", sans-serif;
+      }
+
+      .numpad-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+
+      .numpad-btn {
+        padding: 15px;
+        font-size: 20px;
+        border: none;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: "DS-DIGI", sans-serif;
+      }
+
+      .numpad-btn:hover {
+        background-color: #e0e0e0;
+      }
+
+      .numpad-btn.enter {
+        grid-column: span 3;
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .numpad-btn.clear {
+        background-color: #ff9800;
+        color: white;
+      }
     </style>
   </head>
   <body class="h-screen">
@@ -205,7 +270,7 @@
     </div>
     <div class="h33">
       <div class="card-container">
-        <div class="card regular">
+        <div class="card regular" onclick="openPriceModal()">
           <h2>Regular</h2>
           <div class="price">
             <p>Cash: <span class="one-price-text">$0.00</span></p>
@@ -248,8 +313,36 @@
     </div>
     <div class="h8"></div>
 
+    <!-- Price numpad modal -->
+    <div id="priceModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <div class="numpad-display">
+          <input type="text" id="priceInput" readonly value="0.00" />
+        </div>
+        <div class="numpad-grid">
+          <button class="numpad-btn">7</button>
+          <button class="numpad-btn">8</button>
+          <button class="numpad-btn">9</button>
+          <button class="numpad-btn">4</button>
+          <button class="numpad-btn">5</button>
+          <button class="numpad-btn">6</button>
+          <button class="numpad-btn">1</button>
+          <button class="numpad-btn">2</button>
+          <button class="numpad-btn">3</button>
+          <button class="numpad-btn">0</button>
+          <button class="numpad-btn">.</button>
+          <button class="numpad-btn clear">C</button>
+          <button class="numpad-btn enter">Enter</button>
+        </div>
+      </div>
+    </div>
+
     <script>
       const { ipcRenderer } = require("electron");
+
+      function openPriceModal() {
+        document.getElementById("priceModal").style.display = "block";
+      }
 
       ipcRenderer.on("price-data", (event, data) => {
         document.getElementById("amount-text").innerText = data.amount;
@@ -266,6 +359,45 @@
 
       document.addEventListener("DOMContentLoaded", () => {
         ipcRenderer.send("start-serial");
+
+        // Numpad functionality
+        const modal = document.getElementById("priceModal");
+        const priceInput = document.getElementById("priceInput");
+        let currentValue = "0.00";
+
+        document.querySelectorAll(".numpad-btn").forEach((button) => {
+          button.addEventListener("click", () => {
+            const value = button.textContent;
+
+            if (value === "C") {
+              currentValue = "0.00";
+            } else if (value === "Enter") {
+              // Handle price submission here
+              modal.style.display = "none";
+              // You can emit an event to the main process here
+              ipcRenderer.send("price-update", currentValue);
+            } else if (value === ".") {
+              if (!currentValue.includes(".")) {
+                currentValue += ".";
+              }
+            } else {
+              if (currentValue === "0.00") {
+                currentValue = value;
+              } else {
+                currentValue += value;
+              }
+            }
+
+            priceInput.value = currentValue;
+          });
+        });
+
+        // Close modal when clicking outside
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            modal.style.display = "none";
+          }
+        });
       });
     </script>
   </body>
