@@ -10,10 +10,15 @@
       href="./node_modules/bootstrap/dist/css/bootstrap.min.css"
     />
     <style>
+      @font-face {
+        font-family: "BrixSans";
+        src: url("assets/BrixSans.otf") format("opentype");
+      }
       html {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
+        user-select: none;
       }
       body {
         background-color: #e9e9e9;
@@ -25,13 +30,13 @@
         height: 100vh;
       }
       .h33 {
-        height: 33%;
+        height: 35.5%;
       }
       .h25 {
         height: 25%;
       }
       .h8 {
-        height: 9%;
+        height: 4%;
         background-color: blue;
       }
       .w-full {
@@ -46,18 +51,20 @@
         align-items: center;
       }
       .total-amount-text {
-        font-size: 96px;
-        font-weight: 600;
+        font-size: 112px;
+        margin-top: 30px;
+        /* font ligth */
+        font-weight: 100 !important;
         font-family: "Arial", sans-serif;
         color: #121111;
       }
       .total-amount::before {
         content: "$";
-        font-size: 40px;
-        font-weight: bold;
+        font-size: 60px;
+        /* font-weight: bold; */
         font-family: "Arial", sans-serif;
         margin-bottom: 20px;
-        margin-right: 10px;
+        margin-right: 15px;
       }
 
       .volume {
@@ -66,18 +73,17 @@
         align-items: center;
       }
       .volume-text {
-        font-size: 40px;
+        font-size: 62px;
         font-family: "Arial", sans-serif;
         margin-bottom: 15px;
         margin-right: 10px;
       }
       .volume-text::after {
-        content: "LT";
-        font-size: 24px;
-        font-weight: bold;
+        content: "Liter";
+        font-size: 42px;
         font-family: "Arial", sans-serif;
         margin-bottom: 15px;
-        margin-left: 10px;
+        /* margin-left: 10px; */
       }
 
       .device-text-field {
@@ -87,7 +93,7 @@
       }
 
       .device-text-text {
-        font-size: 24px;
+        font-size: 36px;
         font-family: "Arial", sans-serif;
         /* font-weight: bold; */
         color: #121111;
@@ -181,19 +187,60 @@
       .supreme {
         background-color: #cc0000;
       }
+
+      .modal-backdrop {
+        display: none !important;
+      }
     </style>
 
     <style>
       .numpad {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 10px;
+        gap: 4px;
         /* max-width: 200px; */
         margin: 0 auto;
       }
+
+      .pt0 {
+        padding-top: 0px !important;
+      }
       .numpad-button {
-        padding: 20px;
-        font-size: 18px;
+        /* padding: 15px; */
+
+        font-size: 40px;
+        width: 60px;
+        height: 60px;
+      }
+      .preset-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* height: 65px; Butonun tam yüksekliği */
+        text-align: center;
+        max-width: 60px;
+        letter-spacing: 0px;
+        padding: 15px;
+        font-size: 14px;
+      }
+      .numpad-icon {
+        width: 50px;
+        height: 50px;
+      }
+
+      .pbuttons {
+        font-size: 28px;
+      }
+      .numpad-icon-container {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+      }
+      .numpad-container {
+        padding: 10px;
+        display: flex;
+        justify-content: end;
+        align-items: center;
       }
     </style>
 
@@ -208,16 +255,25 @@
           style="max-width: 480px"
           >0.00</span
         >
-        <!-- go to serial-write.html -->
-        <!-- <a href="serial-write.html">Write Serial</a> -->
       </div>
       <div id="volume-field" class="volume">
-        <div class="volume-text" id="volume-text" style="max-width: 200px">
+        <div class="volume-text" id="volume-text" style="max-width: 300px">
           0.00
         </div>
       </div>
       <div id="device-text-field" class="device-text-field">
-        <span class="device-text-text" id="device-text-text"> </span>
+        <div style="display: flex; align-items: center; margin-right: 25px">
+          <img
+            src="assets/alert-icon.png"
+            alt="liter"
+            class="liter-icon"
+            width="50px"
+            style="margin-bottom: 12px"
+          />
+        </div>
+        <span class="device-text-text" id="device-text-text">
+          123456789012345678901234
+        </span>
       </div>
     </div>
     <div class="h33">
@@ -231,7 +287,7 @@
           style="display: none"
         >
           <source id="videoSource" src="" type="video/mp4" />
-          Tarayıcınız video etiketini desteklemiyor.
+          <!-- Tarayıcınız video etiketini desteklemiyor. -->
         </video>
         <img
           src="assets/images/ads.jpg"
@@ -247,30 +303,36 @@
           class="card regular"
           id="regular-card"
           data-selected-product="Regular"
+          style="
+            height: 85% !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
         >
-          <h2>Regular</h2>
-          <div class="price">
-            <p>Cash: <span class="one-price-text">$0.00</span></p>
-          </div>
-          <p class="note">Price per gallon, all taxes included</p>
+          <h3 style="margin-bottom: 60px">Regular</h3>
+          <!-- <div class="price">
+            <p>Cash: <span class="one-price-text">$7.90</span></p>
+          </div> -->
+          <!-- <p class="note">Price per gallon, all taxes included</p> -->
           <div class="octane">
-            <p>Minimum Octane Rating</p>
-            <h3>87</h3>
+            <!-- <p>Minimum Octane Rating</p> -->
+            <h3>$7.90</h3>
           </div>
-          <p class="note octane">Press for Select</p>
+          <!-- <p class="note octane one-price-text">$7.90</p> -->
         </div>
 
         <div class="card extra" id="extra-card" data-selected-product="Extra">
           <h2>Extra</h2>
-          <div class="price">
+          <!-- <div class="price">
             <p>Cash: <span class="one-price-text">$0.00</span></p>
-          </div>
+          </div> -->
           <p class="note">Price per gallon, all taxes included</p>
           <div class="octane">
             <p>Minimum Octane Rating</p>
             <h3>89</h3>
           </div>
-          <p class="note octane">Press for Select</p>
+          <p class="note octane one-price-text">$8.50</p>
         </div>
 
         <div
@@ -279,93 +341,138 @@
           data-selected-product="Supreme"
         >
           <h2>Supreme</h2>
-          <div class="price">
+          <!-- <div class="price">
             <p>Cash: <span class="one-price-text">$0.00</span></p>
-            <!-- <p>Credit: <span>$3.829</span></p> -->
-          </div>
+          </div> -->
           <p class="note">Price per gallon, all taxes included</p>
           <div class="octane">
             <p>Minimum Octane Rating</p>
             <h3>93</h3>
           </div>
-          <p class="note octane">Press for Select</p>
+          <p class="note octane one-price-text">$8.50</p>
         </div>
       </div>
     </div>
-    <div class="h8"></div>
+    <div class="h8 numpad-container">
+      <!-- numpad icon -->
+      <div class="numpad-icon-container" id="numpad-icon-container">
+        <img src="assets/images/numpad.png" alt="numpad" class="numpad-icon" />
+      </div>
+    </div>
 
     <!-- Modal -->
     <div
-      class="modal fade"
+      class="modal modal-sm"
       id="numPad"
       tabindex="-1"
       aria-labelledby="numPadLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
+        <div class="modal-content" style="background-color: #333">
+          <!-- <div class="modal-header">
             <h5 class="modal-title" id="numPadLabel"></h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Kapat"
-            ></button>
-          </div>
+          </div> -->
           <div class="modal-body">
             <!-- writed data -->
             <div id="writed-data"></div>
             <div class="numpad">
-              <button data-value="1" class="btn btn-primary numpad-button">
+              <button
+                data-value="1"
+                class="btn btn-secondary pt0 numpad-button"
+              >
                 1
               </button>
-              <button data-value="2" class="btn btn-primary numpad-button">
+              <button
+                data-value="2"
+                class="btn btn-secondary pt0 numpad-button"
+              >
                 2
               </button>
-              <button data-value="3" class="btn btn-primary numpad-button">
+              <button
+                data-value="3"
+                class="btn btn-secondary pt0 numpad-button"
+              >
                 3
               </button>
-              <button data-value="P1" class="btn btn-primary numpad-button">
+              <button
+                data-value="P"
+                class="btn btn-primary numpad-button pbuttons"
+              >
                 P1
               </button>
-              <button data-value="4" class="btn btn-primary numpad-button">
+              <button
+                data-value="4"
+                class="btn btn-secondary pt0 numpad-button"
+              >
                 4
               </button>
-              <button data-value="5" class="btn btn-primary numpad-button">
+              <button
+                data-value="5"
+                class="btn btn-secondary pt0 numpad-button"
+              >
                 5
               </button>
-              <button data-value="6" class="btn btn-primary numpad-button">
+              <button
+                data-value="6"
+                class="btn btn-secondary pt0 numpad-button"
+              >
                 6
               </button>
-              <button data-value="P2" class="btn btn-primary numpad-button">
+              <button
+                data-value="+"
+                class="btn btn-primary numpad-button pbuttons"
+              >
                 P2
               </button>
-              <button data-value="7" class="btn btn-primary numpad-button">
+              <button
+                data-value="7"
+                class="btn btn-secondary pt0 numpad-button"
+              >
                 7
               </button>
-              <button data-value="8" class="btn btn-primary numpad-button">
+              <button
+                data-value="8"
+                class="btn btn-secondary pt0 numpad-button"
+              >
                 8
               </button>
-              <button data-value="9" class="btn btn-primary numpad-button">
+              <button
+                data-value="9"
+                class="btn btn-secondary pt0 numpad-button"
+              >
                 9
               </button>
-              <button data-value="P3" class="btn btn-primary numpad-button">
+              <button
+                data-value="-"
+                class="btn btn-primary numpad-button pbuttons"
+              >
                 P3
               </button>
-              <button data-value="C" class="btn btn-primary numpad-button">
+              <button data-value="C" class="btn btn-danger pt0 numpad-button">
                 C
               </button>
-              <button data-value="0" class="btn btn-primary numpad-button">
+              <button
+                data-value="0"
+                class="btn btn-secondary pt0 numpad-button"
+              >
                 0
               </button>
-              <button data-value="preset" class="btn btn-primary numpad-button">
-                Preset
+              <button
+                data-value="F"
+                class="btn btn-primary numpad-button preset-button"
+              >
+                PRESET
               </button>
-              <button data-value="menu" class="btn btn-primary">Menu</button>
+              <button
+                data-value="E"
+                class="btn btn-success numpad-button preset-button"
+              >
+                MENU <br />ENTER
+              </button>
             </div>
           </div>
-          <div class="modal-footer">
+          <!-- <div class="modal-footer">
             <button
               type="button"
               class="btn btn-secondary"
@@ -373,7 +480,7 @@
             >
               Close
             </button>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -390,7 +497,7 @@
       ipcRenderer.on("message-data", (event, data) => {
         console.log("message-data", data);
         document.getElementById("device-text-text").innerText = data.data;
-        document.getElementById("writed-data").innerText = data.data;
+        // document.getElementById("writed-data").innerText = data.data;
       });
 
       const audio = new Audio("keyboard.mp3"); // Path to your sound file
@@ -412,14 +519,15 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".card").forEach((card) => {
-          card.addEventListener("click", function () {
+        document
+          .getElementById("numpad-icon-container")
+          .addEventListener("click", function () {
             // Tıklanan card'ın data-product değerini al
             let selectedProduct = this.getAttribute("data-selected-product");
 
-            // Modal içeriğini değiştir
-            document.getElementById("numPadLabel").textContent =
-              selectedProduct;
+            // // Modal içeriğini değiştir
+            // document.getElementById("numPadLabel").textContent =
+            //   selectedProduct;
 
             // Bootstrap modal'ı aç
             let productModal = new bootstrap.Modal(
@@ -427,9 +535,19 @@
             );
             productModal.show();
           });
-        });
       });
     </script>
+
+    <!--  -->
+    <!-- <script>
+      let amount = 0.0;
+      // create a script change amount text interval 1 second
+      setInterval(() => {
+        amount += 10.1;
+        document.getElementById("amount-text").innerText = amount.toFixed(2);
+        document.getElementById("volume-text").innerText = amount.toFixed(2);
+      }, 50);
+    </script> -->
     <script
       src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
       defer
