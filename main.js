@@ -3,6 +3,9 @@ var SerialPort = require("serialport");
 const path = require("path");
 const fs = require("fs");
 const drivelist = require("drivelist");
+
+const currencyList = require("./currencyList");
+
 let win;
 let port;
 let retryInterval = null;
@@ -187,6 +190,9 @@ function startSerialPort() {
         const bcdVolume = receivedData.slice(11, 14);
         const bcdUprice = receivedData.slice(15, 18);
 
+        const settingsCurrency = receivedData[4];
+        const settingsFormationType = receivedData[5];
+        const settingsVolumeUnit = receivedData[10];
         // console.log("priceDot:", priceDot);
         // console.log("volumeDot:", volumeDot);
         // console.log("bcdAmount:", bcdAmount);
@@ -205,6 +211,9 @@ function startSerialPort() {
           volume: volume,
           price: formattedPrice,
           isAlert: isAlert,
+          settingsCurrency: settingsCurrency,
+          settingsFormationType: settingsFormationType,
+          settingsVolumeUnit: settingsVolumeUnit,
         };
 
         // console.log("sendData:", sendData);
@@ -244,6 +253,74 @@ function startSerialPort() {
           type: "message",
         });
       }
+      while (buffer.includes("START21") && buffer.includes("END21")) {
+        const startIdx = buffer.indexOf("START21");
+        const endIdx = buffer.indexOf("END21") + 7; // "END21" uzunluğu 6 karakter
+        const message = buffer.substring(startIdx, endIdx);
+        buffer = buffer.replace(message, ""); // İşlenen kısmı arabellekten çıkar
+        let content = message.replace("START21:", "").replace(":END21", "");
+        let receivedData = [];
+        let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
+        for (let i = 0; i < content.length; i++) {
+          const byte = content[i];
+          //   console.log("Byte:", byte);
+
+          if (byte === "/") {
+            if (tempData.length > 0) {
+              // Veriyi işlemek için geçici diziyi kullan
+              //   console.log("tempData:", tempData);
+              let stringTempData = tempData.join(""); // "97"
+
+              // "97" bir karakter kodu olduğu için, bunu bir karakter olarak ele alalım
+              let charCode = parseInt(stringTempData, 10); // 97, sayısal değeri alıyoruz
+              // Şimdi, bu sayısal değerin karşılık geldiği hexadecimal değeri alıyoruz
+              let hexData = charCode.toString(16); // '61'
+              receivedData.push(hexData);
+              tempData = []; // Veriyi sıfırla
+            }
+          } else {
+            // / karakteri değilse, veriyi geçici diziye ekle
+            tempData.push(byte);
+          }
+        }
+
+        let checkFirst0x21 = receivedData[0];
+        let responseData;
+        if (checkFirst0x21 != "33") {
+          return;
+        }
+        let firstNozzlePrice = receivedData.slice(1, 4);
+        let secondNozzlePrice = receivedData.slice(4, 7);
+        let thirdNozzlePrice = receivedData.slice(7, 10);
+        let fourthNozzlePrice = receivedData.slice(10, 13);
+        let firstProductType = receivedData[13];
+        let secondProductType = receivedData[14];
+        let thirdProductType = receivedData[15];
+        let fourthProductType = receivedData[16];
+        let firstNozzleStatus = receivedData[17];
+        let secondNozzleStatus = receivedData[18];
+        let thirdNozzleStatus = receivedData[19];
+        let fourthNozzleStatus = receivedData[20];
+        firstNozzlePrice = bcdToInt(firstNozzlePrice);
+        secondNozzlePrice = bcdToInt(secondNozzlePrice);
+        thirdNozzlePrice = bcdToInt(thirdNozzlePrice);
+        fourthNozzlePrice = bcdToInt(fourthNozzlePrice);
+        responseData = {
+          firstNozzlePrice: firstNozzlePrice,
+          secondNozzlePrice: secondNozzlePrice,
+          thirdNozzlePrice: thirdNozzlePrice,
+          fourthNozzlePrice: fourthNozzlePrice,
+          firstProductType: firstProductType,
+          secondProductType: secondProductType,
+          thirdProductType: thirdProductType,
+          fourthProductType: fourthProductType,
+          firstNozzleStatus: firstNozzleStatus,
+          secondNozzleStatus: secondNozzleStatus,
+          thirdNozzleStatus: thirdNozzleStatus,
+          fourthNozzleStatus: fourthNozzleStatus,
+        };
+        win.webContents.send("nozzle-data", responseData);
+      }
     });
 
     // Hata durumunda yeniden bağlantı denemek için interval başlat
@@ -262,6 +339,41 @@ function startSerialPort() {
             data: `Bağlantı sağlanamadı, yeniden denemeye başlanıyor...`,
             type: "message",
           });
+          let receivedData = [
+            2, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 0, 2, 4, 5, 0, 0, 0, 0,
+          ];
+          let firstNozzlePrice = receivedData.slice(1, 4);
+          let secondNozzlePrice = receivedData.slice(4, 7);
+          let thirdNozzlePrice = receivedData.slice(7, 10);
+          let fourthNozzlePrice = receivedData.slice(10, 13);
+          let firstProductType = receivedData[13];
+          let secondProductType = receivedData[14];
+          let thirdProductType = receivedData[15];
+          let fourthProductType = receivedData[16];
+          let firstNozzleStatus = receivedData[17];
+          let secondNozzleStatus = receivedData[18];
+          let thirdNozzleStatus = receivedData[19];
+          let fourthNozzleStatus = receivedData[20];
+          firstNozzlePrice = bcdToInt(firstNozzlePrice);
+          secondNozzlePrice = bcdToInt(secondNozzlePrice);
+          thirdNozzlePrice = bcdToInt(thirdNozzlePrice);
+          fourthNozzlePrice = bcdToInt(fourthNozzlePrice);
+          responseData = {
+            firstNozzlePrice: firstNozzlePrice,
+            secondNozzlePrice: secondNozzlePrice,
+            thirdNozzlePrice: thirdNozzlePrice,
+            fourthNozzlePrice: fourthNozzlePrice,
+            firstProductType: firstProductType,
+            secondProductType: secondProductType,
+            thirdProductType: thirdProductType,
+            fourthProductType: fourthProductType,
+            firstNozzleStatus: firstNozzleStatus,
+            secondNozzleStatus: secondNozzleStatus,
+            thirdNozzleStatus: thirdNozzleStatus,
+            fourthNozzleStatus: fourthNozzleStatus,
+          };
+          win.webContents.send("nozzle-data", responseData);
+
           // console.log(`Bağlantı sağlanamadı, yeniden denemeye başlanıyor...`);
           startSerialPort(); // Tekrar dene
         }, 5000); // 5 saniyede bir dene
@@ -274,5 +386,39 @@ function startSerialPort() {
         data: "Seri port bağlantısı başarısız.",
         type: "message",
       });
+    let receivedData = [
+      1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 10, 2, 4, 5, 0, 0, 0, 0,
+    ];
+    let firstNozzlePrice = receivedData.slice(1, 4);
+    let secondNozzlePrice = receivedData.slice(4, 7);
+    let thirdNozzlePrice = receivedData.slice(7, 10);
+    let fourthNozzlePrice = receivedData.slice(10, 13);
+    let firstProductType = receivedData[13];
+    let secondProductType = receivedData[14];
+    let thirdProductType = receivedData[15];
+    let fourthProductType = receivedData[16];
+    let firstNozzleStatus = receivedData[17];
+    let secondNozzleStatus = receivedData[18];
+    let thirdNozzleStatus = receivedData[19];
+    let fourthNozzleStatus = receivedData[20];
+    firstNozzlePrice = bcdToInt(firstNozzlePrice);
+    secondNozzlePrice = bcdToInt(secondNozzlePrice);
+    thirdNozzlePrice = bcdToInt(thirdNozzlePrice);
+    fourthNozzlePrice = bcdToInt(fourthNozzlePrice);
+    responseData = {
+      firstNozzlePrice: firstNozzlePrice,
+      secondNozzlePrice: secondNozzlePrice,
+      thirdNozzlePrice: thirdNozzlePrice,
+      fourthNozzlePrice: fourthNozzlePrice,
+      firstProductType: firstProductType,
+      secondProductType: secondProductType,
+      thirdProductType: thirdProductType,
+      fourthProductType: fourthProductType,
+      firstNozzleStatus: firstNozzleStatus,
+      secondNozzleStatus: secondNozzleStatus,
+      thirdNozzleStatus: thirdNozzleStatus,
+      fourthNozzleStatus: fourthNozzleStatus,
+    };
+    win.webContents.send("nozzle-data", responseData);
   }
 }

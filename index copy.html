@@ -58,12 +58,15 @@
         font-family: "Arial", sans-serif;
         color: #121111;
       }
-      .currency-symbol {
+      .total-amount::before {
+        content: "$";
         font-size: 60px;
-        margin-right: 10px;
+        /* font-weight: bold; */
         font-family: "Arial", sans-serif;
-        color: #121111;
+        margin-bottom: 20px;
+        margin-right: 15px;
       }
+
       .volume {
         display: flex;
         justify-content: center;
@@ -244,12 +247,14 @@
     <script src="renderer.js"></script>
   </head>
   <body class="h-screen">
-    <div class="card mb-2 w-100" style="height: 320px">
+    <div class="h25 w-full">
       <div id="amount-field" class="total-amount h-50">
-        <div class="total-amount">
-          <span class="currency-symbol" id="currency-symbol">$</span>
-          <span class="total-amount-text">0.00</span>
-        </div>
+        <span
+          class="total-amount-text"
+          id="amount-text"
+          style="max-width: 480px"
+          >0.00</span
+        >
       </div>
       <div id="volume-field" class="volume">
         <div class="volume-text" id="volume-text" style="max-width: 300px">
@@ -271,7 +276,7 @@
         </span>
       </div>
     </div>
-    <div class="card mb-2 p-0 w-100" style="height: 425px">
+    <div class="h33">
       <div class="ads">
         <video
           id="videoPlayer"
@@ -279,7 +284,7 @@
           autoplay
           loop
           muted
-          style="display: none; border-radius: 10px"
+          style="display: none"
         >
           <source id="videoSource" src="" type="video/mp4" />
           <!-- Tarayıcınız video etiketini desteklemiyor. -->
@@ -288,94 +293,83 @@
           src="assets/images/ads.jpg"
           alt="ads"
           id="ads-img"
-          class="ads-img rounded-3"
+          class="ads-img"
         />
       </div>
     </div>
-    <div class="mb-2 p-0 w-100" style="height: 450px">
+    <div class="h33">
       <div class="card-container">
         <div
           class="card regular"
-          id="first-nozzle-card"
+          id="regular-card"
           data-selected-product="Regular"
           style="
             height: 85% !important;
             display: flex;
             align-items: center;
             justify-content: center;
-            display: none;
           "
         >
-          <h3 style="margin-bottom: 60px" id="first-nozzle-product-type">
-            First Nozzle
-          </h3>
+          <h3 style="margin-bottom: 60px">Regular</h3>
+          <!-- <div class="price">
+            <p>Cash: <span class="one-price-text">$7.90</span></p>
+          </div> -->
+          <!-- <p class="note">Price per gallon, all taxes included</p> -->
           <div class="octane">
-            <h3 id="first-nozzle-price">$7.90</h3>
+            <!-- <p>Minimum Octane Rating</p> -->
+            <h3>$7.90</h3>
           </div>
+          <!-- <p class="note octane one-price-text">$7.90</p> -->
         </div>
+
         <div
-          class="card regular"
-          id="second-nozzle-card"
-          data-selected-product="Regular"
+          class="card extra"
+          id="extra-card"
+          data-selected-product="Extra"
           style="
             height: 85% !important;
             display: flex;
             align-items: center;
             justify-content: center;
-            display: none;
           "
         >
-          <h3 style="margin-bottom: 60px" id="second-nozzle-product-type">
-            Second Nozzle
-          </h3>
+          <h3 style="margin-bottom: 60px">Extra</h3>
+          <!-- <div class="price">
+            <p>Cash: <span class="one-price-text">$0.00</span></p>
+          </div> -->
+          <!-- <p class="note">Price per gallon, all taxes included</p> -->
           <div class="octane">
-            <h3 id="second-nozzle-price">$7.90</h3>
+            <!-- <p>Minimum Octane Rating</p> -->
+            <h3>89</h3>
           </div>
+          <!-- <p class="note octane one-price-text">$8.50</p> -->
         </div>
+
         <div
-          class="card regular"
-          id="third-nozzle-card"
-          data-selected-product="Regular"
+          class="card supreme"
+          id="supreme-card"
+          data-selected-product="Supreme"
           style="
             height: 85% !important;
             display: flex;
             align-items: center;
             justify-content: center;
-            display: none;
           "
         >
-          <h3 style="margin-bottom: 60px" id="third-nozzle-product-type">
-            Third Nozzle
-          </h3>
+          <h3 style="margin-bottom: 60px">Supreme</h3>
+          <!-- <div class="price">
+            <p>Cash: <span class="one-price-text">$0.00</span></p>
+          </div> -->
+          <!-- <p class="note">Price per gallon, all taxes included</p> -->
           <div class="octane">
-            <h3 id="third-nozzle-price">$7.90</h3>
+            <!-- <p>Minimum Octane Rating</p> -->
+            <h3>93</h3>
           </div>
-        </div>
-        <div
-          class="card regular"
-          id="fourth-nozzle-card"
-          data-selected-product="Regular"
-          style="
-            height: 85% !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            display: none;
-          "
-        >
-          <h3 style="margin-bottom: 60px" id="fourth-nozzle-product-type">
-            Fourth Nozzle
-          </h3>
-          <div class="octane">
-            <h3 id="fourth-nozzle-price">$7.90</h3>
-          </div>
+          <!-- <p class="note octane one-price-text">$8.50</p> -->
         </div>
       </div>
     </div>
-    <div
-      class="card p-0 w-100 d-flex justify-content-end align-items-end"
-      style="height: 60px"
-    >
+    <div class="h8 numpad-container">
       <!-- numpad icon -->
       <div class="numpad-icon-container" id="numpad-icon-container">
         <img src="assets/images/numpad.png" alt="numpad" class="numpad-icon" />
@@ -508,33 +502,9 @@
     </div>
 
     <script>
-      const currencyList = require("./currencyList");
-      const formationTypes = require("./formationTypes");
-      const volumeUnitList = require("./volumeUnitList");
-      const dispenserProductType = require("./dispenserProductType");
-      let nozzleNumber = 4;
-      let volumeUnit;
-      let dispenserProductTypes;
-      console.log(currencyList);
-      console.log(formationTypes);
-      console.log(volumeUnitList);
-      console.log(dispenserProductType);
       ipcRenderer.on("price-data", (event, data) => {
-        settingsCurrency = data.settingsCurrency;
-        settingsFormationType = data.settingsFormationType;
-        settingsVolumeUnit = data.settingsVolumeUnit;
-
-        // change currency symbol
-        document.getElementById("currency-symbol").innerText =
-          currencyList[data.settingsCurrency].symbol;
-
-        // change amount text
         document.getElementById("amount-text").innerText = data.amount;
-
-        // change volume text
         document.getElementById("volume-text").innerText = data.volume;
-
-        // change price text
         document.querySelectorAll(".one-price-text").forEach((element) => {
           element.innerText = "$" + data.price;
         });
@@ -556,35 +526,6 @@
           audio.currentTime = 0; // Rewind to the start
           audio.play(); // Play the sound
         });
-      });
-
-      ipcRenderer.on("nozzle-data", (event, data) => {
-        console.log("nozzle-data", data);
-
-        for (let i = 1; i <= 4; i++) {
-          const card = document.getElementById(`${ordinal(i)}-nozzle-card`);
-          const price = document.getElementById(`${ordinal(i)}-nozzle-price`);
-          const productType = document.getElementById(
-            `${ordinal(i)}-nozzle-product-type`
-          );
-          if (i <= nozzleNumber) {
-            card.style.display = "flex";
-            price.innerText = data[`${ordinal(i)}NozzlePrice`];
-            productType.innerText =
-              dispenserProductType[
-                data[`${ordinal(i)}ProductType`]
-              ].displayName;
-            card.style.backgroundColor =
-              dispenserProductType[data[`${ordinal(i)}ProductType`]].color;
-          } else {
-            card.style.display = "none";
-          }
-        }
-
-        // Yardımcı fonksiyon: 1 -> "first", 2 -> "second", vs.
-        function ordinal(n) {
-          return ["first", "second", "third", "fourth"][n - 1];
-        }
       });
 
       document.addEventListener("DOMContentLoaded", () => {
