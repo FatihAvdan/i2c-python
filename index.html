@@ -538,6 +538,8 @@
         document.querySelectorAll(".one-price-text").forEach((element) => {
           element.innerText = "$" + data.price;
         });
+        // change nozzle number
+        nozzleNumber = formationTypes[data.settingsFormationType].nozzle;
       });
 
       ipcRenderer.on("message-data", (event, data) => {
