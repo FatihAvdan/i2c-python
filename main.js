@@ -173,6 +173,7 @@ function startSerialPort() {
             tempData.push(byte);
           }
         }
+        console.log("Price-data receivedData:", receivedData);
         const priceDot2 = receivedData[2];
         let isAlert;
         let priceDot;
@@ -217,7 +218,7 @@ function startSerialPort() {
           settingsFormationType: settingsFormationType,
           settingsVolumeUnit: settingsVolumeUnit,
         };
-        console.log("price-data", sendData);
+        // console.log("price-data", sendData);
         win.webContents.send("price-data", sendData);
         // console.log("price-data", { data: sendData, type: "price" });
       }
@@ -247,9 +248,10 @@ function startSerialPort() {
             tempData.push(byte);
           }
         }
+        console.log("Nozzle-data receivedData:", receivedData);
         receivedData = receivedData.slice(1, -1);
         let messageData = receivedData.join("");
-        console.log("messageData:", messageData);
+        // console.log("messageData:", messageData);
         win.webContents.send("message-data", {
           data: messageData,
           type: "message",
@@ -263,7 +265,6 @@ function startSerialPort() {
         let content = message.replace("START21:", "").replace(":END21", "");
         let receivedData = [];
         let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
-        console.log("content:", content);
         for (let i = 0; i < content.length; i++) {
           const byte = content[i];
           //   console.log("Byte:", byte);
@@ -287,7 +288,7 @@ function startSerialPort() {
             tempData.push(byte);
           }
         }
-        // console.log("receivedData:", receivedData);
+        console.log("Nozzle-data receivedData:", receivedData);
         let checkFirst0x21 = receivedData[0];
         // console.log("checkFirst0x21:", checkFirst0x21);
         let responseData;
@@ -324,7 +325,6 @@ function startSerialPort() {
           thirdNozzleStatus: thirdNozzleStatus,
           fourthNozzleStatus: fourthNozzleStatus,
         };
-        console.log("nozzle-data", responseData);
         win.webContents.send("nozzle-data", responseData);
       }
     });
