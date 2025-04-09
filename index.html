@@ -540,6 +540,7 @@
         });
         // change nozzle number
         nozzleNumber = formationTypes[data.settingsFormationType].nozzle;
+        console.log("nozzleNumber:", nozzleNumber);
       });
 
       ipcRenderer.on("message-data", (event, data) => {
