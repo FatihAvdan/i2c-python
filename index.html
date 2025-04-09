@@ -544,7 +544,7 @@
       });
 
       ipcRenderer.on("message-data", (event, data) => {
-        console.log("message-data", data);
+        // console.log("message-data", data);
         document.getElementById("device-text-text").innerText = data.data;
         // document.getElementById("writed-data").innerText = data.data;
       });
@@ -562,7 +562,7 @@
       });
 
       ipcRenderer.on("nozzle-data", (event, data) => {
-        console.log("nozzle-data", data);
+        // console.log("nozzle-data", data);
 
         for (let i = 1; i <= 4; i++) {
           const card = document.getElementById(`${ordinal(i)}-nozzle-card`);
