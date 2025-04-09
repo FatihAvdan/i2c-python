@@ -286,7 +286,7 @@ function startSerialPort() {
             tempData.push(byte);
           }
         }
-
+        console.log("receivedData:", receivedData);
         let checkFirst0x21 = receivedData[0];
         console.log("checkFirst0x21:", checkFirst0x21);
         let responseData;
