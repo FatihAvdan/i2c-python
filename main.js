@@ -263,6 +263,7 @@ function startSerialPort() {
         let content = message.replace("START21:", "").replace(":END21", "");
         let receivedData = [];
         let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
+        console.log("content:", content);
         for (let i = 0; i < content.length; i++) {
           const byte = content[i];
           //   console.log("Byte:", byte);
