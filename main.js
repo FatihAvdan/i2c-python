@@ -171,7 +171,7 @@ function startSerialPort() {
             tempData.push(byte);
           }
         }
-
+        console.log("receivedData:", receivedData);
         const priceDot2 = receivedData[2];
         let isAlert;
         let priceDot;
@@ -216,7 +216,7 @@ function startSerialPort() {
           settingsVolumeUnit: settingsVolumeUnit,
         };
 
-        // console.log("sendData:", sendData);
+        console.log("sendData:", sendData);
         win.webContents.send("price-data", sendData);
         // console.log("price-data", { data: sendData, type: "price" });
       }
