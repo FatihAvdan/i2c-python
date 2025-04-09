@@ -149,6 +149,7 @@ function startSerialPort() {
         let content = message.replace("START18:", "").replace(":END18", "");
         let receivedData = [];
         let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
+        console.log("content:", content);
         for (let i = 0; i < content.length; i++) {
           const byte = content[i];
           //   console.log("Byte:", byte);
@@ -182,7 +183,7 @@ function startSerialPort() {
           isAlert = true;
           priceDot = priceDot2[1];
         }
-        console.log("receivedData:", receivedData);
+
         const twoDots = receivedData[3];
         const volumeDot = twoDots[0];
         const amountDot = twoDots[1];
