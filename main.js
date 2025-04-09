@@ -170,6 +170,7 @@ function startSerialPort() {
             tempData.push(byte);
           }
         }
+        console.log(receivedData);
         const priceDot2 = receivedData[2];
         let isAlert;
         let priceDot;
@@ -193,12 +194,12 @@ function startSerialPort() {
         const settingsVolumeUnit = receivedData[10];
         // console.log("priceDot:", priceDot);
         // console.log("volumeDot:", volumeDot);
-        console.log("bcdAmount:", bcdAmount);
+        // console.log("bcdAmount:", bcdAmount);
         // console.log("bcdVolume:", bcdVolume);
         // console.log("bcdUprice:", bcdUprice);
 
         let amount = bcdToInt(bcdAmount);
-        console.log("amount:", amount);
+        // console.log("amount:", amount);
         amount = formatPrice(amount, amountDot);
         let volume = bcdToInt(bcdVolume);
         volume = formatPrice(volume, volumeDot);
