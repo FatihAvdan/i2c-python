@@ -144,11 +144,11 @@ function startSerialPort() {
         const startIdx = buffer.indexOf("START18");
         const endIdx = buffer.indexOf("END18") + 7; // "END18" uzunluğu 6 karakter
         const message = buffer.substring(startIdx, endIdx);
+        console.log("message:", message);
         buffer = buffer.replace(message, ""); // İşlenen kısmı arabellekten çıkar
         let content = message.replace("START18:", "").replace(":END18", "");
         let receivedData = [];
         let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
-        console.log("content:", content);
         for (let i = 0; i < content.length; i++) {
           const byte = content[i];
           //   console.log("Byte:", byte);
