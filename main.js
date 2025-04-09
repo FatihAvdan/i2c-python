@@ -222,13 +222,14 @@ function startSerialPort() {
       }
 
       while (buffer.includes("START26") && buffer.includes("END26")) {
-        console.log("buffer:", buffer);
         const startIdx = buffer.indexOf("START26");
         const endIdx = buffer.indexOf("END26") + 7; // "END26" uzunluğu 6 karakter
         const message = buffer.substring(startIdx, endIdx);
+        console.log("message:", message);
         buffer = buffer.replace(message, ""); // İşlenen kısmı arabellekten çıkar
         let content = message.replace("START26:", "").replace(":END26", "");
         content = content.slice(1, -1);
+        console.log("content:", content);
         let receivedData = [];
         let tempData = [];
         console.log("content:", content);
