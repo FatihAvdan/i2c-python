@@ -58,17 +58,16 @@ function bcdToInt(bcdList) {
   let result = bcdList;
   for (let i = 0; i < result.length; i++) {
     if (result[i].length == 1) {
-      result[i] = "f" + result[i];
+      result[i] = "F" + result[i];
     }
   }
   result = result.join("");
-  result = result.replaceAll("f", "0");
+  result = result.replaceAll("F", "0");
   if (result.length == 1) {
     result = "0" + result;
   }
   return result;
 }
-
 function formatPrice(price, priceDot) {
   let priceStr = String(price);
   priceDot = parseInt(priceDot);
