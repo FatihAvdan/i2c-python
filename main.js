@@ -238,7 +238,9 @@ function startSerialPort() {
           if (byte === "/") {
             if (tempData.length > 0) {
               let stringTempData = tempData.join("");
-              let asciiData = String.fromCharCode(stringTempData);
+              // hex to charcode
+              let charCode = parseInt(stringTempData, 16);
+              let asciiData = String.fromCharCode(charCode);
               receivedData.push(asciiData);
               tempData = []; // Veriyi sıfırla
             }
