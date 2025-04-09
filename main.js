@@ -117,7 +117,7 @@ function findLinuxUSB() {
 }
 
 function startSerialPort() {
-  const portName = "COM9"; // Bağlantı yapılacak seri port ismi
+  const portName = "/dev/serial0"; // Bağlantı yapılacak seri port ismi
   const baudRate = 115200;
 
   try {
@@ -339,41 +339,6 @@ function startSerialPort() {
             data: `Bağlantı sağlanamadı, yeniden denemeye başlanıyor...`,
             type: "message",
           });
-          let receivedData = [
-            2, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 0, 2, 4, 5, 0, 0, 0, 0,
-          ];
-          let firstNozzlePrice = receivedData.slice(1, 4);
-          let secondNozzlePrice = receivedData.slice(4, 7);
-          let thirdNozzlePrice = receivedData.slice(7, 10);
-          let fourthNozzlePrice = receivedData.slice(10, 13);
-          let firstProductType = receivedData[13];
-          let secondProductType = receivedData[14];
-          let thirdProductType = receivedData[15];
-          let fourthProductType = receivedData[16];
-          let firstNozzleStatus = receivedData[17];
-          let secondNozzleStatus = receivedData[18];
-          let thirdNozzleStatus = receivedData[19];
-          let fourthNozzleStatus = receivedData[20];
-          firstNozzlePrice = bcdToInt(firstNozzlePrice);
-          secondNozzlePrice = bcdToInt(secondNozzlePrice);
-          thirdNozzlePrice = bcdToInt(thirdNozzlePrice);
-          fourthNozzlePrice = bcdToInt(fourthNozzlePrice);
-          responseData = {
-            firstNozzlePrice: firstNozzlePrice,
-            secondNozzlePrice: secondNozzlePrice,
-            thirdNozzlePrice: thirdNozzlePrice,
-            fourthNozzlePrice: fourthNozzlePrice,
-            firstProductType: firstProductType,
-            secondProductType: secondProductType,
-            thirdProductType: thirdProductType,
-            fourthProductType: fourthProductType,
-            firstNozzleStatus: firstNozzleStatus,
-            secondNozzleStatus: secondNozzleStatus,
-            thirdNozzleStatus: thirdNozzleStatus,
-            fourthNozzleStatus: fourthNozzleStatus,
-          };
-          win.webContents.send("nozzle-data", responseData);
-
           // console.log(`Bağlantı sağlanamadı, yeniden denemeye başlanıyor...`);
           startSerialPort(); // Tekrar dene
         }, 5000); // 5 saniyede bir dene
@@ -386,39 +351,5 @@ function startSerialPort() {
         data: "Seri port bağlantısı başarısız.",
         type: "message",
       });
-    let receivedData = [
-      1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 10, 2, 4, 5, 0, 0, 0, 0,
-    ];
-    let firstNozzlePrice = receivedData.slice(1, 4);
-    let secondNozzlePrice = receivedData.slice(4, 7);
-    let thirdNozzlePrice = receivedData.slice(7, 10);
-    let fourthNozzlePrice = receivedData.slice(10, 13);
-    let firstProductType = receivedData[13];
-    let secondProductType = receivedData[14];
-    let thirdProductType = receivedData[15];
-    let fourthProductType = receivedData[16];
-    let firstNozzleStatus = receivedData[17];
-    let secondNozzleStatus = receivedData[18];
-    let thirdNozzleStatus = receivedData[19];
-    let fourthNozzleStatus = receivedData[20];
-    firstNozzlePrice = bcdToInt(firstNozzlePrice);
-    secondNozzlePrice = bcdToInt(secondNozzlePrice);
-    thirdNozzlePrice = bcdToInt(thirdNozzlePrice);
-    fourthNozzlePrice = bcdToInt(fourthNozzlePrice);
-    responseData = {
-      firstNozzlePrice: firstNozzlePrice,
-      secondNozzlePrice: secondNozzlePrice,
-      thirdNozzlePrice: thirdNozzlePrice,
-      fourthNozzlePrice: fourthNozzlePrice,
-      firstProductType: firstProductType,
-      secondProductType: secondProductType,
-      thirdProductType: thirdProductType,
-      fourthProductType: fourthProductType,
-      firstNozzleStatus: firstNozzleStatus,
-      secondNozzleStatus: secondNozzleStatus,
-      thirdNozzleStatus: thirdNozzleStatus,
-      fourthNozzleStatus: fourthNozzleStatus,
-    };
-    win.webContents.send("nozzle-data", responseData);
   }
 }
