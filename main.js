@@ -288,6 +288,7 @@ function startSerialPort() {
         }
 
         let checkFirst0x21 = receivedData[0];
+        console.log("checkFirst0x21:", checkFirst0x21);
         let responseData;
         if (checkFirst0x21 != "33") {
           return;
