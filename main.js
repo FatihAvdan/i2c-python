@@ -27,16 +27,16 @@ function createWindow() {
 app.whenReady().then(() => {
   createWindow();
 
-  ipcMain.handle("check-usb", async () => {
-    let videoPath;
-    // if platform windows
-    if (process.platform === "win32") {
-      videoPath = await findVideoFile();
-    } else {
-      videoPath = findLinuxUSB(); // Linux için özel tarama
-    }
-    return videoPath;
-  });
+  // ipcMain.handle("check-usb", async () => {
+  //   let videoPath;
+  //   // if platform windows
+  //   if (process.platform === "win32") {
+  //     videoPath = await findVideoFile();
+  //   } else {
+  //     videoPath = findLinuxUSB(); // Linux için özel tarama
+  //   }
+  //   return videoPath;
+  // });
 
   ipcMain.on("start-serial", () => {
     // Seri portu başlatıyoruz
