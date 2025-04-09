@@ -173,7 +173,6 @@ function startSerialPort() {
             tempData.push(byte);
           }
         }
-        console.log(receivedData);
         const priceDot2 = receivedData[2];
         let isAlert;
         let priceDot;
