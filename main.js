@@ -215,8 +215,6 @@ function startSerialPort() {
           settingsFormationType: settingsFormationType,
           settingsVolumeUnit: settingsVolumeUnit,
         };
-
-        console.log("sendData:", sendData);
         win.webContents.send("price-data", sendData);
         // console.log("price-data", { data: sendData, type: "price" });
       }
