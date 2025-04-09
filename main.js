@@ -174,6 +174,9 @@ function startSerialPort() {
           }
         }
         console.log("Price-data receivedData:", receivedData);
+        if (receivedData.length == 0) {
+          return;
+        }
         const priceDot2 = receivedData[2];
         let isAlert;
         let priceDot;
@@ -249,6 +252,9 @@ function startSerialPort() {
           }
         }
         console.log("Nozzle-data receivedData:", receivedData);
+        if (receivedData.length == 0) {
+          return;
+        }
         receivedData = receivedData.slice(1, -1);
         let messageData = receivedData.join("");
         // console.log("messageData:", messageData);
@@ -289,6 +295,9 @@ function startSerialPort() {
           }
         }
         console.log("Nozzle-data receivedData:", receivedData);
+        if (receivedData.length == 0) {
+          return;
+        }
         let checkFirst0x21 = receivedData[0];
         // console.log("checkFirst0x21:", checkFirst0x21);
         let responseData;
