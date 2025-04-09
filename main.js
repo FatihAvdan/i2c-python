@@ -286,13 +286,13 @@ function startSerialPort() {
             tempData.push(byte);
           }
         }
-        console.log("receivedData:", receivedData);
+        // console.log("receivedData:", receivedData);
         let checkFirst0x21 = receivedData[0];
-        console.log("checkFirst0x21:", checkFirst0x21);
+        // console.log("checkFirst0x21:", checkFirst0x21);
         let responseData;
-        if (checkFirst0x21 != "33") {
-          return;
-        }
+        // if (checkFirst0x21 != "33") {
+        //   return;
+        // }
         let firstNozzlePrice = receivedData.slice(1, 4);
         let secondNozzlePrice = receivedData.slice(4, 7);
         let thirdNozzlePrice = receivedData.slice(7, 10);
