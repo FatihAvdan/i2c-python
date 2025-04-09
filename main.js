@@ -217,6 +217,7 @@ function startSerialPort() {
           settingsFormationType: settingsFormationType,
           settingsVolumeUnit: settingsVolumeUnit,
         };
+        console.log("price-data", sendData);
         win.webContents.send("price-data", sendData);
         // console.log("price-data", { data: sendData, type: "price" });
       }
@@ -225,14 +226,11 @@ function startSerialPort() {
         const startIdx = buffer.indexOf("START26");
         const endIdx = buffer.indexOf("END26") + 7; // "END26" uzunluğu 6 karakter
         const message = buffer.substring(startIdx, endIdx);
-        console.log("message:", message);
         buffer = buffer.replace(message, ""); // İşlenen kısmı arabellekten çıkar
         let content = message.replace("START26:", "").replace(":END26", "");
         content = content.slice(1, -1);
-        console.log("content:", content);
         let receivedData = [];
         let tempData = [];
-        console.log("content:", content);
         for (let i = 0; i < content.length; i++) {
           const byte = content[i];
           if (byte === "/") {
@@ -324,6 +322,7 @@ function startSerialPort() {
           thirdNozzleStatus: thirdNozzleStatus,
           fourthNozzleStatus: fourthNozzleStatus,
         };
+        console.log("nozzle-data", responseData);
         win.webContents.send("nozzle-data", responseData);
       }
     });
