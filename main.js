@@ -160,9 +160,12 @@ function startSerialPort() {
 
               // "97" bir karakter kodu olduğu için, bunu bir karakter olarak ele alalım
               let charCode = parseInt(stringTempData, 10); // 97, sayısal değeri alıyoruz
+              if (isNaN(charCode)) {
+                charCode = 0;
+              }
               // Şimdi, bu sayısal değerin karşılık geldiği hexadecimal değeri alıyoruz
-              let hexData = charCode.toString(16); // '61'
-              receivedData.push(hexData);
+              // let hexData = charCode.toString(16); // '61'
+              receivedData.push(charCode);
               tempData = []; // Veriyi sıfırla
             }
           } else {
