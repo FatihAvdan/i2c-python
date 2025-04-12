@@ -51,7 +51,7 @@ const dispenserProductType = [
   },
   {
     name: "PR_LPG",
-    displayName: "LPG",
+    displayName: "LPG - Autogas",
     color: "#1224e6",
   },
 ];

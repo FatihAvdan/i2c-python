@@ -9,6 +9,7 @@ const currencyList = require("./currencyList");
 let win;
 let port;
 let retryInterval = null;
+const { screen } = require("electron");
 
 function createWindow() {
   win = new BrowserWindow({
@@ -19,6 +20,10 @@ function createWindow() {
       nodeIntegration: true, // Güvenlik için false
       contextIsolation: false,
     },
+    frame: false,
+    x: screen.getAllDisplays()[1]?.bounds.x || 0,
+    y: screen.getAllDisplays()[1]?.bounds.y || 0,
+    fullscreen: true,
   });
 
   win.loadFile("index.html");
@@ -27,20 +32,21 @@ function createWindow() {
 app.whenReady().then(() => {
   createWindow();
 
-  // ipcMain.handle("check-usb", async () => {
-  //   let videoPath;
-  //   // if platform windows
-  //   if (process.platform === "win32") {
-  //     videoPath = await findVideoFile();
-  //   } else {
-  //     videoPath = findLinuxUSB(); // Linux için özel tarama
-  //   }
-  //   return videoPath;
-  // });
+  ipcMain.handle("check-usb", async () => {
+    let videoPath;
+    // if platform windows
+    if (process.platform === "win32") {
+      videoPath = await findVideoFile();
+    } else {
+      videoPath = findLinuxUSB(); // Linux için özel tarama
+    }
+    return videoPath;
+  });
 
   ipcMain.on("start-serial", () => {
     // Seri portu başlatıyoruz
-    startSerialPort();
+    // startSerialPort();
+    dummySender();
   });
 
   ipcMain.on("write-serial", (event, data) => {
@@ -48,6 +54,45 @@ app.whenReady().then(() => {
     port.write(data);
   });
 });
+
+const dummySender = () => {
+  const volumeDot = 2;
+  const amountDot = 2;
+  const priceDot = 2;
+  const priceData = {
+    amount: formatPrice("12345678", amountDot),
+    volume: formatPrice("123456", volumeDot),
+    price: formatPrice("7654", priceDot),
+    isAlert: false,
+    settingsCurrency: 3,
+    settingsFormationType: 13,
+    settingsVolumeUnit: 1,
+  };
+  console.log("price-data", priceData);
+  win.webContents.send("price-data", priceData);
+
+  const messageData = {
+    data: "         AKORD           ",
+    type: "message",
+  };
+  win.webContents.send("message-data", messageData);
+
+  const nozzleData = {
+    firstNozzlePrice: formatPrice("1234", 2),
+    secondNozzlePrice: formatPrice("222222", 2),
+    thirdNozzlePrice: formatPrice("333333", 2),
+    fourthNozzlePrice: formatPrice("444444", 2),
+    firstProductType: 1,
+    secondProductType: 4,
+    thirdProductType: 1,
+    fourthProductType: 10,
+    firstNozzleStatus: 0,
+    secondNozzleStatus: 0,
+    thirdNozzleStatus: 0,
+    fourthNozzleStatus: 1,
+  };
+  win.webContents.send("nozzle-data", nozzleData);
+};
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -251,7 +296,7 @@ function startSerialPort() {
             tempData.push(byte);
           }
         }
-        console.log("Nozzle-data receivedData:", receivedData);
+        console.log("message-data receivedData:", receivedData);
         if (receivedData.length == 0) {
           return;
         }
