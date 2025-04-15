@@ -189,8 +189,11 @@ function startSerialPort() {
         const startIdx = buffer.indexOf("START18");
         const endIdx = buffer.indexOf("END18") + 7; // "END18" uzunluğu 6 karakter
         const message = buffer.substring(startIdx, endIdx);
+        console.log("message:", message);
         buffer = buffer.replace(message, ""); // İşlenen kısmı arabellekten çıkar
+        console.log("buffer:", buffer);
         let content = message.replace("START18:", "").replace(":END18", "");
+        console.log("content:", content);
         let receivedData = [];
         let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
         for (let i = 0; i < content.length; i++) {
@@ -243,14 +246,7 @@ function startSerialPort() {
         const settingsCurrency = receivedData[4];
         const settingsFormationType = receivedData[5];
         const settingsVolumeUnit = receivedData[10];
-        // console.log("priceDot:", priceDot);
-        // console.log("volumeDot:", volumeDot);
-        // console.log("bcdAmount:", bcdAmount);
-        // console.log("bcdVolume:", bcdVolume);
-        // console.log("bcdUprice:", bcdUprice);
-
         let amount = bcdToInt(bcdAmount);
-        // console.log("amount:", amount);
         amount = formatPrice(amount, amountDot);
         let volume = bcdToInt(bcdVolume);
         volume = formatPrice(volume, volumeDot);
