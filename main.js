@@ -181,6 +181,7 @@ function startSerialPort() {
     });
 
     let buffer;
+    let counter = 0;
     port.on("data", (data) => {
       buffer += data.toString(); // Gelen veriyi arabelleğe ekle
       // console.log("buffer:", buffer);
@@ -194,6 +195,8 @@ function startSerialPort() {
         console.log("buffer:", buffer);
         let content = message.replace("START18:", "").replace(":END18", "");
         console.log("content:", content);
+        counter++;
+        console.log("counter:", counter);
         let receivedData = [];
         let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
         for (let i = 0; i < content.length; i++) {
