@@ -348,6 +348,9 @@ function startSerialPort() {
           }
           console.log("Nozzle-data receivedData:", receivedData);
           if (receivedData.length == 0) {
+            console.log("message:", message);
+            // close electron app
+            app.quit();
             throw new Error("Nozzle-data receivedData is empty");
           }
           let checkFirst0x21 = receivedData[0];
