@@ -188,6 +188,7 @@ function startSerialPort() {
       // Veriler tamlandıysa işle
       while (buffer.includes("START18") && buffer.includes("END18")) {
         try {
+          console.log("buffer:", buffer);
           const startIdx = buffer.indexOf("START18");
           const endIdx = buffer.indexOf("END18") + 7; // "END18" uzunluğu 6 karakter
           const message = buffer.substring(startIdx, endIdx);
@@ -278,6 +279,7 @@ function startSerialPort() {
 
       while (buffer.includes("START26") && buffer.includes("END26")) {
         try {
+          console.log("buffer:", buffer);
           const startIdx = buffer.indexOf("START26");
           const endIdx = buffer.indexOf("END26") + 7; // "END26" uzunluğu 6 karakter
           const message = buffer.substring(startIdx, endIdx);
