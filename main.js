@@ -191,6 +191,9 @@ function startSerialPort() {
       console.log("buffer:", buffer);
       console.log("successCounter:", successCounter);
       console.log("errorCounter:", errorCounter);
+      console.log("priceDataCounter:", priceDataCounter);
+      console.log("messageDataCounter:", messageDataCounter);
+      console.log("nozzleDataCounter:", nozzleDataCounter);
       // Veriler tamlandıysa işle
 
       while (buffer.includes("START18") && buffer.includes("END18")) {
