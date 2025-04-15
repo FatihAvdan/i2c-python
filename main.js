@@ -186,96 +186,96 @@ function startSerialPort() {
       buffer += data.toString(); // Gelen veriyi arabelleğe ekle
       // console.log("buffer:", buffer);
       // Veriler tamlandıysa işle
-      while (buffer.includes("START18") && buffer.includes("END18")) {
-        try {
-          console.log("buffer:", buffer);
-          const startIdx = buffer.indexOf("START18");
-          const endIdx = buffer.indexOf("END18") + 7; // "END18" uzunluğu 6 karakter
-          const message = buffer.substring(startIdx, endIdx);
-          // console.log("message:", message);
-          buffer = buffer.replace(message, ""); // İşlenen kısmı arabellekten çıkar
-          // console.log("buffer:", buffer);
-          let content = message.replace("START18:", "").replace(":END18", "");
-          // console.log("content:", content);
-          counter++;
-          console.log("counter:", counter);
-          let receivedData = [];
-          let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
-          for (let i = 0; i < content.length; i++) {
-            const byte = content[i];
-            //   console.log("Byte:", byte);
+      // while (buffer.includes("START18") && buffer.includes("END18")) {
+      //   try {
+      //     console.log("buffer:", buffer);
+      //     const startIdx = buffer.indexOf("START18");
+      //     const endIdx = buffer.indexOf("END18") + 7; // "END18" uzunluğu 6 karakter
+      //     const message = buffer.substring(startIdx, endIdx);
+      //     // console.log("message:", message);
+      //     buffer = buffer.replace(message, ""); // İşlenen kısmı arabellekten çıkar
+      //     // console.log("buffer:", buffer);
+      //     let content = message.replace("START18:", "").replace(":END18", "");
+      //     // console.log("content:", content);
+      //     counter++;
+      //     console.log("counter:", counter);
+      //     let receivedData = [];
+      //     let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
+      //     for (let i = 0; i < content.length; i++) {
+      //       const byte = content[i];
+      //       //   console.log("Byte:", byte);
 
-            if (byte === "/") {
-              if (tempData.length > 0) {
-                // Veriyi işlemek için geçici diziyi kullan
-                //   console.log("tempData:", tempData);
-                let stringTempData = tempData.join(""); // "97"
+      //       if (byte === "/") {
+      //         if (tempData.length > 0) {
+      //           // Veriyi işlemek için geçici diziyi kullan
+      //           //   console.log("tempData:", tempData);
+      //           let stringTempData = tempData.join(""); // "97"
 
-                // "97" bir karakter kodu olduğu için, bunu bir karakter olarak ele alalım
-                let charCode = parseInt(stringTempData, 10); // 97, sayısal değeri alıyoruz
-                if (isNaN(charCode)) {
-                  charCode = 0;
-                }
-                // Şimdi, bu sayısal değerin karşılık geldiği hexadecimal değeri alıyoruz
-                // let hexData = charCode.toString(16); // '61'
-                receivedData.push(charCode);
-                tempData = []; // Veriyi sıfırla
-              }
-            } else {
-              // / karakteri değilse, veriyi geçici diziye ekle
-              tempData.push(byte);
-            }
-          }
-          console.log("Price-data receivedData:", receivedData);
-          if (receivedData.length == 0) {
-            console.log("message:", message);
-            // close electron app
-            app.quit();
-            throw new Error("Price-data receivedData is empty");
-          }
-          const priceDot2 = receivedData[2];
-          let isAlert;
-          let priceDot;
-          if (priceDot2.length == 1) {
-            isAlert = false;
-            priceDot = priceDot2;
-          } else {
-            isAlert = true;
-            priceDot = priceDot2[1];
-          }
+      //           // "97" bir karakter kodu olduğu için, bunu bir karakter olarak ele alalım
+      //           let charCode = parseInt(stringTempData, 10); // 97, sayısal değeri alıyoruz
+      //           if (isNaN(charCode)) {
+      //             charCode = 0;
+      //           }
+      //           // Şimdi, bu sayısal değerin karşılık geldiği hexadecimal değeri alıyoruz
+      //           // let hexData = charCode.toString(16); // '61'
+      //           receivedData.push(charCode);
+      //           tempData = []; // Veriyi sıfırla
+      //         }
+      //       } else {
+      //         // / karakteri değilse, veriyi geçici diziye ekle
+      //         tempData.push(byte);
+      //       }
+      //     }
+      //     console.log("Price-data receivedData:", receivedData);
+      //     if (receivedData.length == 0) {
+      //       console.log("message:", message);
+      //       // close electron app
+      //       app.quit();
+      //       throw new Error("Price-data receivedData is empty");
+      //     }
+      //     const priceDot2 = receivedData[2];
+      //     let isAlert;
+      //     let priceDot;
+      //     if (priceDot2.length == 1) {
+      //       isAlert = false;
+      //       priceDot = priceDot2;
+      //     } else {
+      //       isAlert = true;
+      //       priceDot = priceDot2[1];
+      //     }
 
-          const twoDots = receivedData[3];
-          const volumeDot = twoDots[0];
-          const amountDot = twoDots[1];
-          const bcdAmount = receivedData.slice(6, 10);
-          const bcdVolume = receivedData.slice(11, 14);
-          const bcdUprice = receivedData.slice(15, 18);
+      //     const twoDots = receivedData[3];
+      //     const volumeDot = twoDots[0];
+      //     const amountDot = twoDots[1];
+      //     const bcdAmount = receivedData.slice(6, 10);
+      //     const bcdVolume = receivedData.slice(11, 14);
+      //     const bcdUprice = receivedData.slice(15, 18);
 
-          const settingsCurrency = receivedData[4];
-          const settingsFormationType = receivedData[5];
-          const settingsVolumeUnit = receivedData[10];
-          let amount = bcdToInt(bcdAmount);
-          amount = formatPrice(amount, amountDot);
-          let volume = bcdToInt(bcdVolume);
-          volume = formatPrice(volume, volumeDot);
-          const uprice = bcdToInt(bcdUprice);
-          const formattedPrice = formatPrice(uprice, priceDot);
+      //     const settingsCurrency = receivedData[4];
+      //     const settingsFormationType = receivedData[5];
+      //     const settingsVolumeUnit = receivedData[10];
+      //     let amount = bcdToInt(bcdAmount);
+      //     amount = formatPrice(amount, amountDot);
+      //     let volume = bcdToInt(bcdVolume);
+      //     volume = formatPrice(volume, volumeDot);
+      //     const uprice = bcdToInt(bcdUprice);
+      //     const formattedPrice = formatPrice(uprice, priceDot);
 
-          const sendData = {
-            amount: amount,
-            volume: volume,
-            price: formattedPrice,
-            isAlert: isAlert,
-            settingsCurrency: settingsCurrency,
-            settingsFormationType: settingsFormationType,
-            settingsVolumeUnit: settingsVolumeUnit,
-          };
-          // console.log("price-data", sendData);
-          win.webContents.send("price-data", sendData);
-        } catch (err) {
-          console.log("price-data error:", err);
-        }
-      }
+      //     const sendData = {
+      //       amount: amount,
+      //       volume: volume,
+      //       price: formattedPrice,
+      //       isAlert: isAlert,
+      //       settingsCurrency: settingsCurrency,
+      //       settingsFormationType: settingsFormationType,
+      //       settingsVolumeUnit: settingsVolumeUnit,
+      //     };
+      //     // console.log("price-data", sendData);
+      //     win.webContents.send("price-data", sendData);
+      //   } catch (err) {
+      //     console.log("price-data error:", err);
+      //   }
+      // }
 
       while (buffer.includes("START26") && buffer.includes("END26")) {
         try {
