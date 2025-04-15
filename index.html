@@ -849,7 +849,10 @@
       });
 
       document.addEventListener("DOMContentLoaded", () => {
-        ipcRenderer.send("start-serial");
+        // wait 10 seconds and then start serial
+        setTimeout(() => {
+          ipcRenderer.send("start-serial");
+        }, 10000);
       });
     </script>
 
