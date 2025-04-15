@@ -283,7 +283,7 @@ function startSerialPort() {
           const startIdx = buffer.indexOf("START26");
           const endIdx = buffer.indexOf("END26") + 7; // "END26" uzunluğu 6 karakter
           const message = buffer.substring(startIdx, endIdx);
-          buffer = buffer.replace(message, ""); // İşlenen kısmı arabellekten çıkar
+          buffer = ""; // İşlenen kısmı arabellekten çıkar
           let content = message.replace("START26:", "").replace(":END26", "");
           content = content.slice(1, -1);
           let receivedData = [];
