@@ -322,89 +322,89 @@ function startSerialPort() {
           console.log("message-data error:", err);
         }
       }
-      // while (buffer.includes("START21") && buffer.includes("END21")) {
-      //   try {
-      //     const startIdx = buffer.indexOf("START21");
-      //     const endIdx = buffer.indexOf("END21") + 7; // "END21" uzunluğu 6 karakter
-      //     const message = buffer.substring(startIdx, endIdx);
-      //     buffer = buffer.replace(message, ""); // İşlenen kısmı arabellekten çıkar
-      //     let content = message.replace("START21:", "").replace(":END21", "");
-      //     let receivedData = [];
-      //     let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
-      //     for (let i = 0; i < content.length; i++) {
-      //       const byte = content[i];
-      //       //   console.log("Byte:", byte);
-      //       if (byte === "/") {
-      //         if (tempData.length > 0) {
-      //           // Veriyi işlemek için geçici diziyi kullan
-      //           //   console.log("tempData:", tempData);
-      //           let stringTempData = tempData.join(""); // "97"
+      while (buffer.includes("START21") && buffer.includes("END21")) {
+        try {
+          const startIdx = buffer.indexOf("START21");
+          const endIdx = buffer.indexOf("END21") + 7; // "END21" uzunluğu 6 karakter
+          const message = buffer.substring(startIdx, endIdx);
+          buffer = ""; // İşlenen kısmı arabellekten çıkar
+          let content = message.replace("START21:", "").replace(":END21", "");
+          let receivedData = [];
+          let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
+          for (let i = 0; i < content.length; i++) {
+            const byte = content[i];
+            //   console.log("Byte:", byte);
+            if (byte === "/") {
+              if (tempData.length > 0) {
+                // Veriyi işlemek için geçici diziyi kullan
+                //   console.log("tempData:", tempData);
+                let stringTempData = tempData.join(""); // "97"
 
-      //           let charCode = parseInt(stringTempData, 10); // 97, sayısal değeri alıyoruz
-      //           if (isNaN(charCode)) {
-      //             charCode = 0;
-      //           }
-      //           // Şimdi, bu sayısal değerin karşılık geldiği hexadecimal değeri alıyoruz
-      //           // let hexData = charCode.toString(16); // '61'
-      //           receivedData.push(charCode);
-      //           tempData = []; // Veriyi sıfırla
-      //         }
-      //       } else {
-      //         // / karakteri değilse, veriyi geçici diziye ekle
-      //         tempData.push(byte);
-      //       }
-      //     }
-      //     console.log("Nozzle-data receivedData:", receivedData);
-      //     if (receivedData.length == 0) {
-      //       console.log("message:", message);
-      //       // close electron app
-      //       app.quit();
-      //       throw new Error("Nozzle-data receivedData is empty");
-      //     }
-      //     let checkFirst0x21 = receivedData[0];
-      //     // console.log("checkFirst0x21:", checkFirst0x21);
-      //     let responseData;
-      //     // if (checkFirst0x21 != "33") {
-      //     //   return;
-      //     // }
-      //     let firstNozzlePrice = receivedData.slice(1, 4);
-      //     let secondNozzlePrice = receivedData.slice(4, 7);
-      //     let thirdNozzlePrice = receivedData.slice(7, 10);
-      //     let fourthNozzlePrice = receivedData.slice(10, 13);
-      //     let firstProductType = receivedData[13];
-      //     let secondProductType = receivedData[14];
-      //     let thirdProductType = receivedData[15];
-      //     let fourthProductType = receivedData[16];
-      //     let firstNozzleStatus = receivedData[17];
-      //     let secondNozzleStatus = receivedData[18];
-      //     let thirdNozzleStatus = receivedData[19];
-      //     let fourthNozzleStatus = receivedData[20];
-      //     firstNozzlePrice = bcdToInt(firstNozzlePrice);
-      //     secondNozzlePrice = bcdToInt(secondNozzlePrice);
-      //     thirdNozzlePrice = bcdToInt(thirdNozzlePrice);
-      //     fourthNozzlePrice = bcdToInt(fourthNozzlePrice);
-      //     responseData = {
-      //       firstNozzlePrice: firstNozzlePrice,
-      //       secondNozzlePrice: secondNozzlePrice,
-      //       thirdNozzlePrice: thirdNozzlePrice,
-      //       fourthNozzlePrice: fourthNozzlePrice,
-      //       firstProductType: firstProductType,
-      //       secondProductType: secondProductType,
-      //       thirdProductType: thirdProductType,
-      //       fourthProductType: fourthProductType,
-      //       firstNozzleStatus: firstNozzleStatus,
-      //       secondNozzleStatus: secondNozzleStatus,
-      //       thirdNozzleStatus: thirdNozzleStatus,
-      //       fourthNozzleStatus: fourthNozzleStatus,
-      //     };
-      //     win.webContents.send("nozzle-data", responseData);
-      //   } catch (err) {
-      //     console.log(
-      //       "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
-      //     );
-      //     console.log("nozzle-data error:", err);
-      //   }
-      // }
+                let charCode = parseInt(stringTempData, 10); // 97, sayısal değeri alıyoruz
+                if (isNaN(charCode)) {
+                  charCode = 0;
+                }
+                // Şimdi, bu sayısal değerin karşılık geldiği hexadecimal değeri alıyoruz
+                // let hexData = charCode.toString(16); // '61'
+                receivedData.push(charCode);
+                tempData = []; // Veriyi sıfırla
+              }
+            } else {
+              // / karakteri değilse, veriyi geçici diziye ekle
+              tempData.push(byte);
+            }
+          }
+          console.log("Nozzle-data receivedData:", receivedData);
+          if (receivedData.length == 0) {
+            console.log("message:", message);
+            // close electron app
+            app.quit();
+            throw new Error("Nozzle-data receivedData is empty");
+          }
+          let checkFirst0x21 = receivedData[0];
+          // console.log("checkFirst0x21:", checkFirst0x21);
+          let responseData;
+          // if (checkFirst0x21 != "33") {
+          //   return;
+          // }
+          let firstNozzlePrice = receivedData.slice(1, 4);
+          let secondNozzlePrice = receivedData.slice(4, 7);
+          let thirdNozzlePrice = receivedData.slice(7, 10);
+          let fourthNozzlePrice = receivedData.slice(10, 13);
+          let firstProductType = receivedData[13];
+          let secondProductType = receivedData[14];
+          let thirdProductType = receivedData[15];
+          let fourthProductType = receivedData[16];
+          let firstNozzleStatus = receivedData[17];
+          let secondNozzleStatus = receivedData[18];
+          let thirdNozzleStatus = receivedData[19];
+          let fourthNozzleStatus = receivedData[20];
+          firstNozzlePrice = bcdToInt(firstNozzlePrice);
+          secondNozzlePrice = bcdToInt(secondNozzlePrice);
+          thirdNozzlePrice = bcdToInt(thirdNozzlePrice);
+          fourthNozzlePrice = bcdToInt(fourthNozzlePrice);
+          responseData = {
+            firstNozzlePrice: firstNozzlePrice,
+            secondNozzlePrice: secondNozzlePrice,
+            thirdNozzlePrice: thirdNozzlePrice,
+            fourthNozzlePrice: fourthNozzlePrice,
+            firstProductType: firstProductType,
+            secondProductType: secondProductType,
+            thirdProductType: thirdProductType,
+            fourthProductType: fourthProductType,
+            firstNozzleStatus: firstNozzleStatus,
+            secondNozzleStatus: secondNozzleStatus,
+            thirdNozzleStatus: thirdNozzleStatus,
+            fourthNozzleStatus: fourthNozzleStatus,
+          };
+          win.webContents.send("nozzle-data", responseData);
+        } catch (err) {
+          console.log(
+            "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+          );
+          console.log("nozzle-data error:", err);
+        }
+      }
     });
 
     // Hata durumunda yeniden bağlantı denemek için interval başlat
