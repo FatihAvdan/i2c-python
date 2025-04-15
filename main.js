@@ -181,38 +181,33 @@ function startSerialPort() {
     });
 
     let buffer;
-    let counter = 0;
+    let successCounter = 0;
+    let errorCounter = 0;
+    let priceDataCounter = 0;
+    let messageDataCounter = 0;
+    let nozzleDataCounter = 0;
     port.on("data", (data) => {
       buffer += data.toString(); // Gelen veriyi arabelleğe ekle
-      // console.log("buffer:", buffer);
+      console.log("buffer:", buffer);
+      console.log("successCounter:", successCounter);
+      console.log("errorCounter:", errorCounter);
       // Veriler tamlandıysa işle
+
       while (buffer.includes("START18") && buffer.includes("END18")) {
         try {
-          console.log("buffer:", buffer);
           const startIdx = buffer.indexOf("START18");
-          const endIdx = buffer.indexOf("END18") + 7; // "END18" uzunluğu 6 karakter
+          const endIdx = buffer.indexOf("END18") + 7;
           const message = buffer.substring(startIdx, endIdx);
-          // console.log("message:", message);
-          buffer = ""; // İşlenen kısmı arabellekten çıkar
-          // console.log("buffer:", buffer);
+          buffer = "";
           let content = message.replace("START18:", "").replace(":END18", "");
-          // console.log("content:", content);
-          counter++;
-          console.log("counter:", counter);
           let receivedData = [];
           let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
           for (let i = 0; i < content.length; i++) {
             const byte = content[i];
-            //   console.log("Byte:", byte);
-
             if (byte === "/") {
               if (tempData.length > 0) {
-                // Veriyi işlemek için geçici diziyi kullan
-                //   console.log("tempData:", tempData);
-                let stringTempData = tempData.join(""); // "97"
-
-                // "97" bir karakter kodu olduğu için, bunu bir karakter olarak ele alalım
-                let charCode = parseInt(stringTempData, 10); // 97, sayısal değeri alıyoruz
+                let stringTempData = tempData.join("");
+                let charCode = parseInt(stringTempData, 10);
                 if (isNaN(charCode)) {
                   charCode = 0;
                 }
@@ -222,15 +217,11 @@ function startSerialPort() {
                 tempData = []; // Veriyi sıfırla
               }
             } else {
-              // / karakteri değilse, veriyi geçici diziye ekle
               tempData.push(byte);
             }
           }
-          console.log("Price-data receivedData:", receivedData);
+          // console.log("Price-data receivedData:", receivedData);
           if (receivedData.length == 0) {
-            console.log("message:", message);
-            // close electron app
-            app.quit();
             throw new Error("Price-data receivedData is empty");
           }
           const priceDot2 = receivedData[2];
@@ -272,8 +263,11 @@ function startSerialPort() {
           };
           // console.log("price-data", sendData);
           win.webContents.send("price-data", sendData);
+          successCounter++;
+          priceDataCounter++;
         } catch (err) {
           console.log("price-data error:", err);
+          errorCounter++;
         }
       }
 
@@ -281,9 +275,9 @@ function startSerialPort() {
         try {
           console.log("buffer:", buffer.length + "\n");
           const startIdx = buffer.indexOf("START26");
-          const endIdx = buffer.indexOf("END26") + 7; // "END26" uzunluğu 6 karakter
+          const endIdx = buffer.indexOf("END26") + 7;
           const message = buffer.substring(startIdx, endIdx);
-          buffer = ""; // İşlenen kısmı arabellekten çıkar
+          buffer = "";
           let content = message.replace("START26:", "").replace(":END26", "");
           content = content.slice(1, -1);
           let receivedData = [];
@@ -300,15 +294,12 @@ function startSerialPort() {
                 tempData = []; // Veriyi sıfırla
               }
             } else {
-              // / karakteri değilse, veriyi geçici diziye ekle
               tempData.push(byte);
             }
           }
-          console.log("message-data receivedData:", receivedData);
+          // console.log("message-data receivedData:", receivedData);
           if (receivedData.length == 0) {
-            console.log("message:", message);
-            // close electron app
-            app.quit();
+            errorCounter++;
             throw new Error("Message-data receivedData is empty");
           }
           receivedData = receivedData.slice(1, -1);
@@ -318,16 +309,18 @@ function startSerialPort() {
             data: messageData,
             type: "message",
           });
+          messageDataCounter++;
         } catch (err) {
+          errorCounter++;
           console.log("message-data error:", err);
         }
       }
       while (buffer.includes("START21") && buffer.includes("END21")) {
         try {
           const startIdx = buffer.indexOf("START21");
-          const endIdx = buffer.indexOf("END21") + 7; // "END21" uzunluğu 6 karakter
+          const endIdx = buffer.indexOf("END21") + 7;
           const message = buffer.substring(startIdx, endIdx);
-          buffer = ""; // İşlenen kısmı arabellekten çıkar
+          buffer = "";
           let content = message.replace("START21:", "").replace(":END21", "");
           let receivedData = [];
           let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
@@ -336,33 +329,26 @@ function startSerialPort() {
             //   console.log("Byte:", byte);
             if (byte === "/") {
               if (tempData.length > 0) {
-                // Veriyi işlemek için geçici diziyi kullan
-                //   console.log("tempData:", tempData);
-                let stringTempData = tempData.join(""); // "97"
-
-                let charCode = parseInt(stringTempData, 10); // 97, sayısal değeri alıyoruz
+                let stringTempData = tempData.join("");
+                let charCode = parseInt(stringTempData, 10);
                 if (isNaN(charCode)) {
                   charCode = 0;
                 }
                 // Şimdi, bu sayısal değerin karşılık geldiği hexadecimal değeri alıyoruz
                 // let hexData = charCode.toString(16); // '61'
                 receivedData.push(charCode);
-                tempData = []; // Veriyi sıfırla
+                tempData = [];
               }
             } else {
-              // / karakteri değilse, veriyi geçici diziye ekle
               tempData.push(byte);
             }
           }
-          console.log("Nozzle-data receivedData:", receivedData);
+          // console.log("Nozzle-data receivedData:", receivedData);
           if (receivedData.length == 0) {
-            console.log("message:", message);
-            // close electron app
-            app.quit();
+            errorCounter++;
             throw new Error("Nozzle-data receivedData is empty");
           }
           let checkFirst0x21 = receivedData[0];
-          // console.log("checkFirst0x21:", checkFirst0x21);
           let responseData;
           // if (checkFirst0x21 != "33") {
           //   return;
@@ -398,10 +384,9 @@ function startSerialPort() {
             fourthNozzleStatus: fourthNozzleStatus,
           };
           win.webContents.send("nozzle-data", responseData);
+          nozzleDataCounter++;
         } catch (err) {
-          console.log(
-            "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
-          );
+          errorCounter++;
           console.log("nozzle-data error:", err);
         }
       }
