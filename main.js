@@ -388,7 +388,9 @@ function startSerialPort() {
           };
           win.webContents.send("nozzle-data", responseData);
         } catch (err) {
-          console.log("nozzle-data error:", err);
+          while (1) {
+            console.log("nozzle-data error:", err);
+          }
         }
       }
     });
