@@ -348,7 +348,7 @@ function startSerialPort() {
           }
           console.log("Nozzle-data receivedData:", receivedData);
           if (receivedData.length == 0) {
-            return;
+            throw new Error("Nozzle-data receivedData is empty");
           }
           let checkFirst0x21 = receivedData[0];
           // console.log("checkFirst0x21:", checkFirst0x21);
