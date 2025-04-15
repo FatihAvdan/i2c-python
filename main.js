@@ -227,7 +227,10 @@ function startSerialPort() {
           }
           console.log("Price-data receivedData:", receivedData);
           if (receivedData.length == 0) {
-            return;
+            console.log("message:", message);
+            // close electron app
+            app.quit();
+            throw new Error("Price-data receivedData is empty");
           }
           const priceDot2 = receivedData[2];
           let isAlert;
@@ -301,7 +304,10 @@ function startSerialPort() {
           }
           console.log("message-data receivedData:", receivedData);
           if (receivedData.length == 0) {
-            return;
+            console.log("message:", message);
+            // close electron app
+            app.quit();
+            throw new Error("Message-data receivedData is empty");
           }
           receivedData = receivedData.slice(1, -1);
           let messageData = receivedData.join("");
