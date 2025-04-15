@@ -38,15 +38,15 @@ app.whenReady().then(() => {
     if (process.platform === "win32") {
       videoPath = await findVideoFile();
     } else {
-      videoPath = findLinuxUSB(); // Linux için özel tarama
+      // videoPath = findLinuxUSB(); // Linux için özel tarama
     }
     return videoPath;
   });
 
   ipcMain.on("start-serial", () => {
     // Seri portu başlatıyoruz
-    // startSerialPort();
-    dummySender();
+    startSerialPort();
+    // dummySender();
   });
 
   ipcMain.on("write-serial", (event, data) => {
