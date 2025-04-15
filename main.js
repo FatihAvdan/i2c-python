@@ -182,7 +182,7 @@ function startSerialPort() {
 
     let buffer;
     port.on("data", (data) => {
-      // buffer += data.toString(); // Gelen veriyi arabelleğe ekle
+      buffer += data.toString(); // Gelen veriyi arabelleğe ekle
       // console.log("buffer:", buffer);
       // Veriler tamlandıysa işle
       while (buffer.includes("START18") && buffer.includes("END18")) {
