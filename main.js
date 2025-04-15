@@ -313,6 +313,7 @@ function startSerialPort() {
             type: "message",
           });
           messageDataCounter++;
+          successCounter++;
         } catch (err) {
           errorCounter++;
           console.log("message-data error:", err);
@@ -387,6 +388,7 @@ function startSerialPort() {
             fourthNozzleStatus: fourthNozzleStatus,
           };
           win.webContents.send("nozzle-data", responseData);
+          successCounter++;
           nozzleDataCounter++;
         } catch (err) {
           errorCounter++;
