@@ -279,7 +279,7 @@ function startSerialPort() {
 
       while (buffer.includes("START26") && buffer.includes("END26")) {
         try {
-          console.log("buffer:", buffer);
+          console.log("buffer:", buffer.length + "\n");
           const startIdx = buffer.indexOf("START26");
           const endIdx = buffer.indexOf("END26") + 7; // "END26" uzunluğu 6 karakter
           const message = buffer.substring(startIdx, endIdx);
