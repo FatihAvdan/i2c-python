@@ -271,46 +271,49 @@ function startSerialPort() {
         } catch (err) {
           console.log("price-data error:", err);
         }
-        // console.log("price-data", { data: sendData, type: "price" });
       }
 
-      // while (buffer.includes("START26") && buffer.includes("END26")) {
-      //   const startIdx = buffer.indexOf("START26");
-      //   const endIdx = buffer.indexOf("END26") + 7; // "END26" uzunluğu 6 karakter
-      //   const message = buffer.substring(startIdx, endIdx);
-      //   buffer = buffer.replace(message, ""); // İşlenen kısmı arabellekten çıkar
-      //   let content = message.replace("START26:", "").replace(":END26", "");
-      //   content = content.slice(1, -1);
-      //   let receivedData = [];
-      //   let tempData = [];
-      //   for (let i = 0; i < content.length; i++) {
-      //     const byte = content[i];
-      //     if (byte === "/") {
-      //       if (tempData.length > 0) {
-      //         let stringTempData = tempData.join("");
-      //         // hex to charcode
-      //         let charCode = parseInt(stringTempData, 16);
-      //         let asciiData = String.fromCharCode(charCode);
-      //         receivedData.push(asciiData);
-      //         tempData = []; // Veriyi sıfırla
-      //       }
-      //     } else {
-      //       // / karakteri değilse, veriyi geçici diziye ekle
-      //       tempData.push(byte);
-      //     }
-      //   }
-      //   console.log("message-data receivedData:", receivedData);
-      //   if (receivedData.length == 0) {
-      //     return;
-      //   }
-      //   receivedData = receivedData.slice(1, -1);
-      //   let messageData = receivedData.join("");
-      //   // console.log("messageData:", messageData);
-      //   win.webContents.send("message-data", {
-      //     data: messageData,
-      //     type: "message",
-      //   });
-      // }
+      while (buffer.includes("START26") && buffer.includes("END26")) {
+        try {
+          const startIdx = buffer.indexOf("START26");
+          const endIdx = buffer.indexOf("END26") + 7; // "END26" uzunluğu 6 karakter
+          const message = buffer.substring(startIdx, endIdx);
+          buffer = buffer.replace(message, ""); // İşlenen kısmı arabellekten çıkar
+          let content = message.replace("START26:", "").replace(":END26", "");
+          content = content.slice(1, -1);
+          let receivedData = [];
+          let tempData = [];
+          for (let i = 0; i < content.length; i++) {
+            const byte = content[i];
+            if (byte === "/") {
+              if (tempData.length > 0) {
+                let stringTempData = tempData.join("");
+                // hex to charcode
+                let charCode = parseInt(stringTempData, 16);
+                let asciiData = String.fromCharCode(charCode);
+                receivedData.push(asciiData);
+                tempData = []; // Veriyi sıfırla
+              }
+            } else {
+              // / karakteri değilse, veriyi geçici diziye ekle
+              tempData.push(byte);
+            }
+          }
+          console.log("message-data receivedData:", receivedData);
+          if (receivedData.length == 0) {
+            return;
+          }
+          receivedData = receivedData.slice(1, -1);
+          let messageData = receivedData.join("");
+          // console.log("messageData:", messageData);
+          win.webContents.send("message-data", {
+            data: messageData,
+            type: "message",
+          });
+        } catch (err) {
+          console.log("message-data error:", err);
+        }
+      }
       // while (buffer.includes("START21") && buffer.includes("END21")) {
       //   const startIdx = buffer.indexOf("START21");
       //   const endIdx = buffer.indexOf("END21") + 7; // "END21" uzunluğu 6 karakter
