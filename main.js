@@ -45,8 +45,8 @@ app.whenReady().then(() => {
 
   ipcMain.on("start-serial", () => {
     // Seri portu başlatıyoruz
-    startSerialPort();
-    // dummySender();
+    // startSerialPort();
+    dummySender();
   });
 
   ipcMain.on("write-serial", (event, data) => {
@@ -92,6 +92,15 @@ const dummySender = () => {
     fourthNozzleStatus: 1,
   };
   sendToRenderer("nozzle-data", nozzleData);
+  setTimeout(() => {
+    sendToRenderer("full-screen-container-data", {
+      visibility: 1,
+      texts: {
+        turkish: `Başarıyla bağlandı.`,
+        english: `Successfully connected.`,
+      },
+    });
+  }, 2000);
 };
 
 app.on("window-all-closed", () => {
