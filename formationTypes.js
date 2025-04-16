@@ -57,7 +57,7 @@ const formationTypes = [
     id: 9,
     name: "PCUX4_DISP1_NOZZLE3",
     display: 1,
-    nozzle: 3,
+    nozzle: 4,
   },
   {
     id: 10,
