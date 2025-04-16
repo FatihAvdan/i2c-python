@@ -183,7 +183,17 @@ function startSerialPort() {
   try {
     port = new SerialPort(portName, { baudRate });
     port.on("open", () => {
-      clearInterval(retryInterval);
+      if (retryInterval) {
+        clearInterval(retryInterval);
+        retryInterval = null;
+        sendToRenderer("full-screen-container-data", {
+          visibility: 0,
+          texts: {
+            turkish: `Başarıyla bağlandı.`,
+            english: `Successfully connected.`,
+          },
+        });
+      }
 
       sendToRenderer("full-screen-container-data", {
         visibility: 0,
