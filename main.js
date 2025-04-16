@@ -260,6 +260,7 @@ function startSerialPort() {
             throw new Error("Price-data receivedData is empty");
           }
           const priceDot2 = receivedData[2];
+          console.log("priceDot2:", priceDot2);
           let isAlert;
           let priceDot;
           if (priceDot2.length == 1) {
@@ -272,7 +273,6 @@ function startSerialPort() {
 
           let twoDots = receivedData[3];
           twoDots = twoDots.toString();
-          console.log("twoDots:", twoDots);
           const volumeDot = twoDots[0];
           const amountDot = twoDots[1];
           const bcdAmount = receivedData.slice(6, 10);
@@ -282,12 +282,8 @@ function startSerialPort() {
           const settingsCurrency = receivedData[4];
           const settingsFormationType = receivedData[5];
           const settingsVolumeUnit = receivedData[10];
-          console.log("amountDot:", amountDot);
-          console.log("bcdAmount:", bcdAmount);
           let amount = bcdToInt(bcdAmount);
-          console.log("amount before format:", amount);
           amount = formatPrice(amount, amountDot);
-          console.log("amount after format:", amount);
           let volume = bcdToInt(bcdVolume);
           volume = formatPrice(volume, volumeDot);
           const uprice = bcdToInt(bcdUprice);
