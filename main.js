@@ -259,7 +259,8 @@ function startSerialPort() {
           if (receivedData.length == 0) {
             throw new Error("Price-data receivedData is empty");
           }
-          const priceDot2 = receivedData[2];
+          let priceDot2 = receivedData[2];
+          priceDot2 = priceDot2.toString();
           let isAlert;
 
           if (priceDot2.length == 1) {
