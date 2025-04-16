@@ -309,12 +309,12 @@ function startSerialPort() {
 
       while (buffer.includes("START26") && buffer.includes("END26")) {
         try {
-          console.log("buffer:", buffer.length + "\n");
           const startIdx = buffer.indexOf("START26");
           const endIdx = buffer.indexOf("END26") + 7;
           const message = buffer.substring(startIdx, endIdx);
           buffer = "";
           let content = message.replace("START26:", "").replace(":END26", "");
+          console.log(content);
           content = content.slice(1, -1);
           let receivedData = [];
           let tempData = [];
@@ -383,7 +383,6 @@ function startSerialPort() {
           let checkFirst0x21 = receivedData[0];
           let responseData;
           let firstNozzlePrice = receivedData.slice(1, 4);
-          console.log("firstNozzlePrice:", firstNozzlePrice);
           let secondNozzlePrice = receivedData.slice(4, 7);
           let thirdNozzlePrice = receivedData.slice(7, 10);
           let fourthNozzlePrice = receivedData.slice(10, 13);
@@ -399,9 +398,6 @@ function startSerialPort() {
           secondNozzlePrice = bcdToInt(secondNozzlePrice);
           thirdNozzlePrice = bcdToInt(thirdNozzlePrice);
           fourthNozzlePrice = bcdToInt(fourthNozzlePrice);
-          console.log("priceDot:", priceDot);
-          console.log("bcdToInt:", firstNozzlePrice);
-          console.log("formatPrice:", formatPrice(firstNozzlePrice, priceDot));
           responseData = {
             firstNozzlePrice: formatPrice(firstNozzlePrice, priceDot),
             secondNozzlePrice: formatPrice(secondNozzlePrice, priceDot),
