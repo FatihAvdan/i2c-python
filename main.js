@@ -162,7 +162,8 @@ function findLinuxUSB() {
   try {
     const { execSync } = require("child_process");
     const result = execSync(
-      "lsblk -o MOUNTPOINT,RM | grep '1$' | awk '{print $1}'"
+      "lsblk -o MOUNTPOINT,RM | grep '1$' | awk '{print $1}'",
+      { maxBuffer: 1024 * 1024 }
     )
       .toString()
       .trim();
