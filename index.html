@@ -702,12 +702,7 @@
       let nozzleNumber;
       let volumeUnit;
       let dispenserProductTypes;
-      console.log(currencyList);
-      console.log(formationTypes);
-      console.log(volumeUnitList);
-      console.log(dispenserProductType);
       ipcRenderer.on("price-data", (event, data) => {
-        console.log("price-data", data);
         settingsCurrency = data.settingsCurrency;
         settingsFormationType = data.settingsFormationType;
         settingsVolumeUnit = data.settingsVolumeUnit;
@@ -729,17 +724,11 @@
         // change volume text
         document.getElementById("volume-text").innerText = data.volume;
         // change nozzle number
-        console.log(
-          "settingsFormationType:",
-          formationTypesSortedById[data.settingsFormationType]
-        );
         nozzleNumber =
           formationTypesSortedById[data.settingsFormationType].nozzle;
-        console.log("nozzleNumber:", nozzleNumber);
       });
 
       ipcRenderer.on("message-data", (event, data) => {
-        // console.log("message-data", data);
         if (data.data.startsWith("E")) {
           document.getElementById("device-text-field-alert").style.display =
             "flex";
@@ -749,12 +738,10 @@
         }
 
         document.getElementById("device-text-text").innerText = data.data;
-        // document.getElementById("writed-data").innerText = data.data;
       });
 
       const audio = new Audio("keyboard.mp3"); // Path to your sound file
 
-      console.log(document.querySelectorAll(".numpad button"));
       document.querySelectorAll(".numpad button").forEach((button) => {
         button.addEventListener("click", () => {
           const value = button.getAttribute("data-value");
@@ -765,7 +752,6 @@
       });
 
       ipcRenderer.on("nozzle-data", (event, data) => {
-        // console.log("nozzle-data", data);
         let nozzleStatus = [];
         const selectedNozzleCardContainer = document.getElementById(
           `selected-nozzle-card-container`
@@ -845,10 +831,6 @@
             `${ordinal(nozzleStatusIndex + 1)}-nozzle-card`
           );
           activeCard.classList.add("hidden-important");
-          console.log("activeCard:", activeCard);
-
-          console.log("nozzleStatusIndex:", nozzleStatusIndex);
-
           // get all alert cards and display none except index
           const alertCards = document.querySelectorAll(".alert-card");
           alertCards.forEach((card, index) => {
@@ -883,7 +865,6 @@
               data[`${ordinal(nozzleStatusIndex + 1)}ProductType`]
             ].displayName;
           const splitProductTypeText = productTypeText.split(" - ");
-          console.log("splitProductTypeText:", splitProductTypeText);
           selectedNozzleProductType1.innerText = splitProductTypeText[0];
           selectedNozzleProductType2.innerText = splitProductTypeText[1];
         } else {
@@ -900,7 +881,6 @@
             .classList.remove("w-75");
         }
 
-        // Yardımcı fonksiyon: 1 -> "first", 2 -> "second", vs.
         function ordinal(n) {
           return ["first", "second", "third", "fourth"][n - 1];
         }
