@@ -904,8 +904,7 @@
         // wait 10 seconds and then start serial
         setTimeout(() => {
           ipcRenderer.send("start-serial");
-          changeFullScreenContainerVisibility(0);
-        }, 10000);
+        }, 2000);
       });
     </script>
 

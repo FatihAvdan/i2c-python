@@ -185,6 +185,7 @@ function startSerialPort() {
     let priceDataCounter = 0;
     let messageDataCounter = 0;
     let nozzleDataCounter = 0;
+    let initDisplay = false;
     port.on("data", (data) => {
       buffer += data.toString(); // Gelen veriyi arabelleğe ekle
       console.log("buffer:", buffer);
@@ -193,7 +194,21 @@ function startSerialPort() {
       console.log("priceDataCounter:", priceDataCounter);
       console.log("messageDataCounter:", messageDataCounter);
       console.log("nozzleDataCounter:", nozzleDataCounter);
-
+      if (
+        !initDisplay &&
+        nozzleDataCounter > 5 &&
+        priceDataCounter > 5 &&
+        messageDataCounter > 5
+      ) {
+        initDisplay = true;
+        sendToRenderer("full-screen-container-data", {
+          visibility: 0,
+          texts: {
+            turkish: `Başarıyla bağlandı.`,
+            english: `Successfully connected.`,
+          },
+        });
+      }
       while (buffer.includes("START18") && buffer.includes("END18")) {
         try {
           const startIdx = buffer.indexOf("START18");
