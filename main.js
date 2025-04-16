@@ -29,7 +29,10 @@ function createWindow() {
 
   win.loadFile("index.html");
 }
-
+app.commandLine.appendSwitch("ignore-gpu-blacklist");
+app.commandLine.appendSwitch("enable-gpu-rasterization");
+app.commandLine.appendSwitch("enable-zero-copy");
+app.commandLine.appendSwitch("disable-software-rasterizer");
 app.whenReady().then(() => {
   createWindow();
 
