@@ -280,6 +280,8 @@ function startSerialPort() {
           const settingsCurrency = receivedData[4];
           const settingsFormationType = receivedData[5];
           const settingsVolumeUnit = receivedData[10];
+          console.log("amountDot:", amountDot);
+          console.log("bcdAmount:", bcdAmount);
           let amount = bcdToInt(bcdAmount);
           console.log("amount before format:", amount);
           amount = formatPrice(amount, amountDot);
