@@ -205,6 +205,7 @@ function startSerialPort() {
     let messageDataCounter = 0;
     let nozzleDataCounter = 0;
     let initDisplay = false;
+    let priceDot = 2;
     port.on("data", (data) => {
       buffer += data.toString(); // Gelen veriyi arabelleğe ekle
       if (0) {
@@ -260,9 +261,8 @@ function startSerialPort() {
             throw new Error("Price-data receivedData is empty");
           }
           const priceDot2 = receivedData[2];
-          console.log("priceDot2:", priceDot2);
           let isAlert;
-          let priceDot;
+
           if (priceDot2.length == 1) {
             isAlert = false;
             priceDot = priceDot2;
@@ -399,10 +399,10 @@ function startSerialPort() {
           thirdNozzlePrice = bcdToInt(thirdNozzlePrice);
           fourthNozzlePrice = bcdToInt(fourthNozzlePrice);
           responseData = {
-            firstNozzlePrice: firstNozzlePrice,
-            secondNozzlePrice: secondNozzlePrice,
-            thirdNozzlePrice: thirdNozzlePrice,
-            fourthNozzlePrice: fourthNozzlePrice,
+            firstNozzlePrice: formatPrice(firstNozzlePrice, priceDot),
+            secondNozzlePrice: formatPrice(secondNozzlePrice, priceDot),
+            thirdNozzlePrice: formatPrice(thirdNozzlePrice, priceDot),
+            fourthNozzlePrice: formatPrice(fourthNozzlePrice, priceDot),
             firstProductType: firstProductType,
             secondProductType: secondProductType,
             thirdProductType: thirdProductType,
