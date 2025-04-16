@@ -299,7 +299,6 @@ function startSerialPort() {
             settingsVolumeUnit: settingsVolumeUnit,
           };
           sendToRenderer("price-data", sendData);
-          console.log("price-data", sendData);
           successCounter++;
           priceDataCounter++;
         } catch (err) {
@@ -418,7 +417,6 @@ function startSerialPort() {
             fourthNozzleStatus: fourthNozzleStatus,
           };
           sendToRenderer("nozzle-data", responseData);
-          console.log("nozzle-data", responseData);
           successCounter++;
           nozzleDataCounter++;
         } catch (err) {
