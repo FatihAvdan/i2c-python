@@ -137,7 +137,6 @@ function formatPrice(price, priceDot) {
   if (priceDot > 0 && priceDot < priceStr.length) {
     priceStr = priceStr.slice(0, -priceDot) + "." + priceStr.slice(-priceDot);
   }
-  console.log("priceStr:", priceStr);
   return priceStr;
 }
 
@@ -398,6 +397,10 @@ function startSerialPort() {
           secondNozzlePrice = bcdToInt(secondNozzlePrice);
           thirdNozzlePrice = bcdToInt(thirdNozzlePrice);
           fourthNozzlePrice = bcdToInt(fourthNozzlePrice);
+          console.log("priceDot:", priceDot);
+          console.log("firstNozzlePrice:", firstNozzlePrice);
+          console.log("bcdToInt:", bcdToInt(firstNozzlePrice));
+          console.log("formatPrice:", formatPrice(firstNozzlePrice, priceDot));
           responseData = {
             firstNozzlePrice: formatPrice(firstNozzlePrice, priceDot),
             secondNozzlePrice: formatPrice(secondNozzlePrice, priceDot),
