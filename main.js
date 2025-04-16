@@ -190,8 +190,8 @@ function startSerialPort() {
       sendToRenderer("full-screen-container-data", {
         visibility: 0,
         texts: {
-          turkish: `Seri port ${portName} başarıyla açıldı.`,
-          english: `Serial port ${portName} successfully opened.`,
+          turkish: `Başarıyla bağlandı.`,
+          english: `Successfully connected.`,
         },
       });
     });
@@ -439,9 +439,12 @@ function startSerialPort() {
 
       if (!retryInterval) {
         retryInterval = setInterval(() => {
-          sendToRenderer("message-data", {
-            data: `Bağlantı sağlanamadı, yeniden denemeye başlanıyor...`,
-            type: "message",
+          sendToRenderer("full-screen-container-data", {
+            visibility: 1,
+            texts: {
+              turkish: `Bağlantı sağlanamadı, yeniden denemeye başlanıyor...`,
+              english: `Connection failed, retrying...`,
+            },
           });
           console.log(`port on error`, err);
           startSerialPort();
