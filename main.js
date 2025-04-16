@@ -96,11 +96,20 @@ const dummySender = () => {
     sendToRenderer("full-screen-container-data", {
       visibility: 1,
       texts: {
+        turkish: `Bağlantı sağlanıyor...`,
+        english: `Connecting...`,
+      },
+    });
+  }, 2000);
+  setTimeout(() => {
+    sendToRenderer("full-screen-container-data", {
+      visibility: 0,
+      texts: {
         turkish: `Başarıyla bağlandı.`,
         english: `Successfully connected.`,
       },
     });
-  }, 2000);
+  }, 3000);
 };
 
 app.on("window-all-closed", () => {
