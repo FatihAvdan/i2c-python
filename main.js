@@ -137,6 +137,7 @@ function formatPrice(price, priceDot) {
   if (priceDot > 0 && priceDot < priceStr.length) {
     priceStr = priceStr.slice(0, -priceDot) + "." + priceStr.slice(-priceDot);
   }
+  console.log("priceStr:", priceStr);
   return priceStr;
 }
 
