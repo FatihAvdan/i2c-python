@@ -422,9 +422,11 @@ function startSerialPort() {
     port.on("error", (err) => {
       if (port && port.isOpen) {
         port.close((closeErr) => {
+          console.log("port Kapatılmayı deneiyor", closeErr);
           if (closeErr)
             console.error("Port kapatılırken hata:", closeErr.message);
           port = null;
+          console.log("port Kapatıldı");
         });
       }
 
