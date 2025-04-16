@@ -161,20 +161,10 @@ async function findVideoFile() {
 // Linux için özel USB tarama fonksiyonu
 function findLinuxUSB() {
   try {
-    const result = execSync(
-      "lsblk -o MOUNTPOINT,RM | grep ' 1$' | awk '{print $1}'",
-      { encoding: "utf8", maxBuffer: 1024 * 1024 }
-    ).trim();
-    if (result && fs.existsSync(result)) {
-      const videoPath = path.join(result, "video.mp4");
-      console.log(
-        "videoPath |||||||||||||||||||||||||||||||||||||||||||||||||||",
-        videoPath
-      );
-      if (fs.existsSync(videoPath)) {
-        return videoPath;
-      }
-    }
+    const videoPath = execSync("find /media -name video.mp4 2>/dev/null", {
+      encoding: "utf8",
+    }).trim();
+    if (videoPath && fs.existsSync(videoPath)) return videoPath;
   } catch (err) {
     console.error("USB bulunamadı:", err.message || err);
   }
