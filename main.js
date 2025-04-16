@@ -38,7 +38,7 @@ app.whenReady().then(() => {
     if (process.platform === "win32") {
       videoPath = await findVideoFile();
     } else {
-      // videoPath = findLinuxUSB(); // Linux için özel tarama
+      videoPath = findLinuxUSB(); // Linux için özel tarama
     }
     return videoPath;
   });
@@ -168,7 +168,6 @@ function findLinuxUSB() {
     if (result) {
       const videoPath = path.join(result, "video.mp4");
       if (fs.existsSync(videoPath)) {
-        console.log("videoPath:", videoPath);
         return videoPath;
       }
     }
