@@ -165,7 +165,10 @@ function findLinuxUSB() {
       "lsblk -o MOUNTPOINT,RM | grep ' 1$' | awk '{print $1}'",
       { encoding: "utf8", maxBuffer: 1024 * 1024 }
     ).trim();
-
+    console.log(
+      "result |||||||||||||||||||||||||||||||||||||||||||||||||||",
+      result
+    );
     if (result && fs.existsSync(result)) {
       const videoPath = path.join(result, "video.mp4");
       if (fs.existsSync(videoPath)) {
