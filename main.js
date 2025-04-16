@@ -382,6 +382,7 @@ function startSerialPort() {
           let checkFirst0x21 = receivedData[0];
           let responseData;
           let firstNozzlePrice = receivedData.slice(1, 4);
+          console.log("firstNozzlePrice:", firstNozzlePrice);
           let secondNozzlePrice = receivedData.slice(4, 7);
           let thirdNozzlePrice = receivedData.slice(7, 10);
           let fourthNozzlePrice = receivedData.slice(10, 13);
@@ -398,8 +399,7 @@ function startSerialPort() {
           thirdNozzlePrice = bcdToInt(thirdNozzlePrice);
           fourthNozzlePrice = bcdToInt(fourthNozzlePrice);
           console.log("priceDot:", priceDot);
-          console.log("firstNozzlePrice:", firstNozzlePrice);
-          console.log("bcdToInt:", bcdToInt(firstNozzlePrice));
+          console.log("bcdToInt:", firstNozzlePrice);
           console.log("formatPrice:", formatPrice(firstNozzlePrice, priceDot));
           responseData = {
             firstNozzlePrice: formatPrice(firstNozzlePrice, priceDot),
