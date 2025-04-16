@@ -177,6 +177,7 @@ function findLinuxUSB() {
   }
   return null;
 }
+let priceDot = 2;
 
 function startSerialPort() {
   const portName = "/dev/serial0"; // Bağlantı yapılacak seri port ismi
@@ -204,7 +205,6 @@ function startSerialPort() {
     let messageDataCounter = 0;
     let nozzleDataCounter = 0;
     let initDisplay = false;
-    let priceDot = 2;
     port.on("data", (data) => {
       buffer += data.toString(); // Gelen veriyi arabelleğe ekle
       if (0) {
