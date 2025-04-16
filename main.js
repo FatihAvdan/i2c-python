@@ -315,7 +315,7 @@ function startSerialPort() {
           buffer = "";
           let content = message.replace("START26:", "").replace(":END26", "");
           console.log("before:", content);
-          content = content.slice(1, -1);
+          content = content.slice(3, -1);
           console.log("after:", content);
           let receivedData = [];
           let tempData = [];
