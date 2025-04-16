@@ -20,7 +20,7 @@ function createWindow() {
       nodeIntegration: true, // Güvenlik için false
       contextIsolation: false,
     },
-    frame: false,
+    frame: true,
     x: screen.getAllDisplays()[1]?.bounds.x || 0,
     y: screen.getAllDisplays()[1]?.bounds.y || 0,
     fullscreen: true,
@@ -69,13 +69,13 @@ const dummySender = () => {
     settingsVolumeUnit: 1,
   };
   console.log("price-data", priceData);
-  win.webContents.send("price-data", priceData);
+  sendToRenderer("price-data", priceData);
 
   const messageData = {
     data: "         AKORD           ",
     type: "message",
   };
-  win.webContents.send("message-data", messageData);
+  sendToRenderer("message-data", messageData);
 
   const nozzleData = {
     firstNozzlePrice: formatPrice("1234", 2),
@@ -91,7 +91,7 @@ const dummySender = () => {
     thirdNozzleStatus: 0,
     fourthNozzleStatus: 1,
   };
-  win.webContents.send("nozzle-data", nozzleData);
+  sendToRenderer("nozzle-data", nozzleData);
 };
 
 app.on("window-all-closed", () => {
@@ -162,25 +162,24 @@ function findLinuxUSB() {
 
 function startSerialPort() {
   const portName = "/dev/serial0"; // Bağlantı yapılacak seri port ismi
+  // const portName = "COM4"; // Bağlantı yapılacak seri port ismi
   const baudRate = 115200;
 
   try {
-    // Seri portu başlatıyoruz
     port = new SerialPort(portName, { baudRate });
-
-    // Port açıldığında
     port.on("open", () => {
-      // console.log(`Seri port açıldı: ${portName}`);
-      // Başarılı bağlantı durumunda arka plandaki denemeyi durdur
       clearInterval(retryInterval);
-      if (win)
-        win.webContents.send("message-data", {
-          data: `Seri port ${portName} başarıyla açıldı.`,
-          type: "message",
-        });
+
+      sendToRenderer("full-screen-container-data", {
+        visibility: 0,
+        texts: {
+          turkish: `Seri port ${portName} başarıyla açıldı.`,
+          english: `Serial port ${portName} successfully opened.`,
+        },
+      });
     });
 
-    let buffer;
+    let buffer = "";
     let successCounter = 0;
     let errorCounter = 0;
     let priceDataCounter = 0;
@@ -194,7 +193,6 @@ function startSerialPort() {
       console.log("priceDataCounter:", priceDataCounter);
       console.log("messageDataCounter:", messageDataCounter);
       console.log("nozzleDataCounter:", nozzleDataCounter);
-      // Veriler tamlandıysa işle
 
       while (buffer.includes("START18") && buffer.includes("END18")) {
         try {
@@ -204,7 +202,7 @@ function startSerialPort() {
           buffer = "";
           let content = message.replace("START18:", "").replace(":END18", "");
           let receivedData = [];
-          let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
+          let tempData = [];
           for (let i = 0; i < content.length; i++) {
             const byte = content[i];
             if (byte === "/") {
@@ -214,16 +212,14 @@ function startSerialPort() {
                 if (isNaN(charCode)) {
                   charCode = 0;
                 }
-                // Şimdi, bu sayısal değerin karşılık geldiği hexadecimal değeri alıyoruz
                 // let hexData = charCode.toString(16); // '61'
                 receivedData.push(charCode);
-                tempData = []; // Veriyi sıfırla
+                tempData = [];
               }
             } else {
               tempData.push(byte);
             }
           }
-          // console.log("Price-data receivedData:", receivedData);
           if (receivedData.length == 0) {
             throw new Error("Price-data receivedData is empty");
           }
@@ -264,8 +260,7 @@ function startSerialPort() {
             settingsFormationType: settingsFormationType,
             settingsVolumeUnit: settingsVolumeUnit,
           };
-          // console.log("price-data", sendData);
-          win.webContents.send("price-data", sendData);
+          sendToRenderer("price-data", sendData);
           successCounter++;
           priceDataCounter++;
         } catch (err) {
@@ -294,21 +289,19 @@ function startSerialPort() {
                 let charCode = parseInt(stringTempData, 16);
                 let asciiData = String.fromCharCode(charCode);
                 receivedData.push(asciiData);
-                tempData = []; // Veriyi sıfırla
+                tempData = [];
               }
             } else {
               tempData.push(byte);
             }
           }
-          // console.log("message-data receivedData:", receivedData);
           if (receivedData.length == 0) {
             errorCounter++;
             throw new Error("Message-data receivedData is empty");
           }
           receivedData = receivedData.slice(1, -1);
           let messageData = receivedData.join("");
-          // console.log("messageData:", messageData);
-          win.webContents.send("message-data", {
+          sendToRenderer("message-data", {
             data: messageData,
             type: "message",
           });
@@ -327,10 +320,9 @@ function startSerialPort() {
           buffer = "";
           let content = message.replace("START21:", "").replace(":END21", "");
           let receivedData = [];
-          let tempData = []; // Veriyi geçici olarak tutmak için bir dizi
+          let tempData = [];
           for (let i = 0; i < content.length; i++) {
             const byte = content[i];
-            //   console.log("Byte:", byte);
             if (byte === "/") {
               if (tempData.length > 0) {
                 let stringTempData = tempData.join("");
@@ -338,7 +330,6 @@ function startSerialPort() {
                 if (isNaN(charCode)) {
                   charCode = 0;
                 }
-                // Şimdi, bu sayısal değerin karşılık geldiği hexadecimal değeri alıyoruz
                 // let hexData = charCode.toString(16); // '61'
                 receivedData.push(charCode);
                 tempData = [];
@@ -347,16 +338,12 @@ function startSerialPort() {
               tempData.push(byte);
             }
           }
-          // console.log("Nozzle-data receivedData:", receivedData);
           if (receivedData.length == 0) {
             errorCounter++;
             throw new Error("Nozzle-data receivedData is empty");
           }
           let checkFirst0x21 = receivedData[0];
           let responseData;
-          // if (checkFirst0x21 != "33") {
-          //   return;
-          // }
           let firstNozzlePrice = receivedData.slice(1, 4);
           let secondNozzlePrice = receivedData.slice(4, 7);
           let thirdNozzlePrice = receivedData.slice(7, 10);
@@ -387,7 +374,7 @@ function startSerialPort() {
             thirdNozzleStatus: thirdNozzleStatus,
             fourthNozzleStatus: fourthNozzleStatus,
           };
-          win.webContents.send("nozzle-data", responseData);
+          sendToRenderer("nozzle-data", responseData);
           successCounter++;
           nozzleDataCounter++;
         } catch (err) {
@@ -397,33 +384,41 @@ function startSerialPort() {
       }
     });
 
-    // Hata durumunda yeniden bağlantı denemek için interval başlat
     port.on("error", (err) => {
-      // console.error("Seri port hatası:", err.message);
       if (win)
-        win.webContents.send("message-data", {
-          data: `Seri port hatası: ${err.message}`,
-          type: "message",
+        sendToRenderer("full-screen-container-data", {
+          visibility: 1,
+          texts: {
+            turkish: `Bağlantı sağlanamadı, yeniden denemeye başlanıyor...`,
+            english: `Connection failed, retrying...`,
+          },
         });
 
-      // Yeniden denemek için intervali başlat
       if (!retryInterval) {
         retryInterval = setInterval(() => {
-          win.webContents.send("message-data", {
+          sendToRenderer("message-data", {
             data: `Bağlantı sağlanamadı, yeniden denemeye başlanıyor...`,
             type: "message",
           });
-          // console.log(`Bağlantı sağlanamadı, yeniden denemeye başlanıyor...`);
-          startSerialPort(); // Tekrar dene
-        }, 5000); // 5 saniyede bir dene
+          console.log(`port on error`, err);
+          startSerialPort();
+        }, 5000);
       }
     });
   } catch (err) {
-    // console.error("Seri port bağlantısı başarısız:", err);
-    if (win)
-      win.webContents.send("message-data", {
-        data: "Seri port bağlantısı başarısız.",
-        type: "message",
-      });
+    sendToRenderer("full-screen-container-data", {
+      visibility: 1,
+      texts: {
+        turkish: `Seri port bağlantısı başarısız.`,
+        english: `Serial port connection failed.`,
+      },
+    });
+  }
+}
+function sendToRenderer(channel, data) {
+  if (win && win.webContents) {
+    win.webContents.send(channel, data);
+  } else {
+    console.warn(`Render'a mesaj gönderilemedi. Kanal: ${channel}`);
   }
 }
