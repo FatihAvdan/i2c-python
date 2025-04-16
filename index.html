@@ -302,6 +302,17 @@
         >
           Loading...
         </span>
+        <div class="progress mt-2" style="width: 25%">
+          <div
+            class="progress-bar bg-success"
+            id="progress-bar"
+            role="progressbar"
+            style="width: 25%"
+            aria-valuenow="25"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          ></div>
+        </div>
       </div>
     </div>
     <div
@@ -902,9 +913,15 @@
 
       document.addEventListener("DOMContentLoaded", () => {
         // wait 10 seconds and then start serial
-        setTimeout(() => {
-          ipcRenderer.send("start-serial");
-        }, 10000);
+
+        for (let i = 0; i < 25; i++) {
+          setTimeout(() => {
+            document.getElementById("progress-bar").style.width = `${i * 4}%`;
+            if (i === 24) {
+              ipcRenderer.send("start-serial");
+            }
+          }, i * 1000);
+        }
       });
     </script>
 
