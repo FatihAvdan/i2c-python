@@ -317,6 +317,9 @@ function startSerialPort() {
           console.log("before:", content);
           content = content.slice(3, -1);
           console.log("after:", content);
+          if (content[content.length - 1] == "/") {
+            content = content.slice(0, -1);
+          }
           let receivedData = [];
           let tempData = [];
           for (let i = 0; i < content.length; i++) {
