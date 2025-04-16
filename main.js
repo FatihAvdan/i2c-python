@@ -270,7 +270,9 @@ function startSerialPort() {
             priceDot = priceDot2[1];
           }
 
-          const twoDots = receivedData[3];
+          let twoDots = receivedData[3];
+          twoDots = twoDots.toString();
+          console.log("twoDots:", twoDots);
           const volumeDot = twoDots[0];
           const amountDot = twoDots[1];
           const bcdAmount = receivedData.slice(6, 10);
