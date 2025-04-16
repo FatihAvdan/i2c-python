@@ -59,7 +59,7 @@ const dummySender = () => {
   const volumeDot = 2;
   const amountDot = 2;
   const priceData = {
-    const priceDot = 2;
+    priceDot: 2,
     amount: formatPrice(12345678, amountDot),
     volume: formatPrice("123456", volumeDot),
     isAlert: false,
