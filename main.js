@@ -314,9 +314,7 @@ function startSerialPort() {
           const message = buffer.substring(startIdx, endIdx);
           buffer = "";
           let content = message.replace("START26:", "").replace(":END26", "");
-          console.log("before:", content);
           content = content.slice(3, -1);
-          console.log("after:", content);
           if (content[content.length - 1] == "/") {
             content = content.slice(0, -1);
           }
@@ -419,6 +417,7 @@ function startSerialPort() {
             fourthNozzleStatus: fourthNozzleStatus,
           };
           sendToRenderer("nozzle-data", responseData);
+          console.log("nozzle-data", responseData);
           successCounter++;
           nozzleDataCounter++;
         } catch (err) {
