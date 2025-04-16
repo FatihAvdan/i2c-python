@@ -160,6 +160,7 @@ async function findVideoFile() {
 // Linux için özel USB tarama fonksiyonu
 function findLinuxUSB() {
   try {
+    const { execSync } = require("child_process");
     const result = execSync(
       "lsblk -o MOUNTPOINT,RM | grep ' 1' | awk '{print $1}'"
     )
