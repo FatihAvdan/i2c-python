@@ -420,6 +420,14 @@ function startSerialPort() {
     });
 
     port.on("error", (err) => {
+      if (port && port.isOpen) {
+        port.close((closeErr) => {
+          if (closeErr)
+            console.error("Port kapatılırken hata:", closeErr.message);
+          port = null;
+        });
+      }
+
       if (win)
         sendToRenderer("full-screen-container-data", {
           visibility: 1,
@@ -439,6 +447,7 @@ function startSerialPort() {
             },
           });
           console.log(`port on error`, err);
+
           startSerialPort();
         }, 5000);
       }
