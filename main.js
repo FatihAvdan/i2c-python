@@ -45,8 +45,8 @@ app.whenReady().then(() => {
 
   ipcMain.on("start-serial", () => {
     // Seri portu başlatıyoruz
-    // startSerialPort();
-    dummySender();
+    startSerialPort();
+    // dummySender();
   });
 
   ipcMain.on("write-serial", (event, data) => {
