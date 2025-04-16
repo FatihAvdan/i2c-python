@@ -327,7 +327,9 @@ function startSerialPort() {
                 // hex to charcode
                 let charCode = parseInt(stringTempData, 16);
                 let asciiData = String.fromCharCode(charCode);
-                receivedData.push(asciiData);
+                if (receivedData.length < 25) {
+                  receivedData.push(asciiData);
+                }
                 tempData = [];
               }
             } else {
