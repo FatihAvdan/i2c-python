@@ -58,12 +58,12 @@ app.whenReady().then(() => {
 const dummySender = () => {
   const volumeDot = 2;
   const amountDot = 2;
+  const priceDot = 2;
   const priceData = {
-    priceDot: 2,
     amount: formatPrice(12345678, amountDot),
     volume: formatPrice("123456", volumeDot),
-    isAlert: false,
     price: formatPrice("7654", priceDot),
+    isAlert: false,
     settingsCurrency: 3,
     settingsFormationType: 13,
     settingsVolumeUnit: 1,
@@ -131,10 +131,10 @@ function bcdToInt(bcdList) {
   }
   return result;
 }
-let priceStr = String(price);
 function formatPrice(price, priceDot) {
+  let priceStr = String(price);
+  priceDot = parseInt(priceDot);
   if (priceDot > 0 && priceDot < priceStr.length) {
-    priceDot = parseInt(priceDot);
     priceStr = priceStr.slice(0, -priceDot) + "." + priceStr.slice(-priceDot);
   }
   return priceStr;
@@ -204,8 +204,8 @@ function startSerialPort() {
     let messageDataCounter = 0;
     let nozzleDataCounter = 0;
     let initDisplay = false;
+    let priceDot = 2;
     port.on("data", (data) => {
-      let priceDot = 2;
       buffer += data.toString(); // Gelen veriyi arabelleğe ekle
       if (0) {
         console.log("buffer:", buffer);
@@ -398,12 +398,12 @@ function startSerialPort() {
           secondNozzlePrice = bcdToInt(secondNozzlePrice);
           thirdNozzlePrice = bcdToInt(thirdNozzlePrice);
           fourthNozzlePrice = bcdToInt(fourthNozzlePrice);
-          console.log("bcdToInt:", firstNozzlePrice);
           console.log("priceDot:", priceDot);
+          console.log("bcdToInt:", firstNozzlePrice);
+          console.log("formatPrice:", formatPrice(firstNozzlePrice, priceDot));
           responseData = {
-            console.log("formatPrice:", formatPrice(firstNozzlePrice, priceDot));
-            secondNozzlePrice: formatPrice(secondNozzlePrice, priceDot),
             firstNozzlePrice: formatPrice(firstNozzlePrice, priceDot),
+            secondNozzlePrice: formatPrice(secondNozzlePrice, priceDot),
             thirdNozzlePrice: formatPrice(thirdNozzlePrice, priceDot),
             fourthNozzlePrice: formatPrice(fourthNozzlePrice, priceDot),
             firstProductType: firstProductType,
