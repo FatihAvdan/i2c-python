@@ -3,6 +3,7 @@ var SerialPort = require("serialport");
 const path = require("path");
 const fs = require("fs");
 const drivelist = require("drivelist");
+const { execSync } = require("child_process");
 
 const currencyList = require("./currencyList");
 
@@ -160,21 +161,19 @@ async function findVideoFile() {
 // Linux için özel USB tarama fonksiyonu
 function findLinuxUSB() {
   try {
-    const { execSync } = require("child_process");
     const result = execSync(
-      "lsblk -o MOUNTPOINT,RM | grep '1$' | awk '{print $1}'",
-      { maxBuffer: 1024 * 1024 }
-    )
-      .toString()
-      .trim();
-    if (result) {
+      "lsblk -o MOUNTPOINT,RM | grep ' 1$' | awk '{print $1}'",
+      { encoding: "utf8", maxBuffer: 1024 * 1024 }
+    ).trim();
+
+    if (result && fs.existsSync(result)) {
       const videoPath = path.join(result, "video.mp4");
       if (fs.existsSync(videoPath)) {
         return videoPath;
       }
     }
   } catch (err) {
-    console.error("USB bulunamadı:", err);
+    console.error("USB bulunamadı:", err.message || err);
   }
   return null;
 }
