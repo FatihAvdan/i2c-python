@@ -207,12 +207,14 @@ function startSerialPort() {
     let initDisplay = false;
     port.on("data", (data) => {
       buffer += data.toString(); // Gelen veriyi arabelleğe ekle
-      console.log("buffer:", buffer);
-      console.log("successCounter:", successCounter);
-      console.log("errorCounter:", errorCounter);
-      console.log("priceDataCounter:", priceDataCounter);
-      console.log("messageDataCounter:", messageDataCounter);
-      console.log("nozzleDataCounter:", nozzleDataCounter);
+      if (0) {
+        console.log("buffer:", buffer);
+        console.log("successCounter:", successCounter);
+        console.log("errorCounter:", errorCounter);
+        console.log("priceDataCounter:", priceDataCounter);
+        console.log("messageDataCounter:", messageDataCounter);
+        console.log("nozzleDataCounter:", nozzleDataCounter);
+      }
       if (
         !initDisplay &&
         nozzleDataCounter > 5 &&
@@ -279,7 +281,9 @@ function startSerialPort() {
           const settingsFormationType = receivedData[5];
           const settingsVolumeUnit = receivedData[10];
           let amount = bcdToInt(bcdAmount);
+          console.log("amount before format:", amount);
           amount = formatPrice(amount, amountDot);
+          console.log("amount after format:", amount);
           let volume = bcdToInt(bcdVolume);
           volume = formatPrice(volume, volumeDot);
           const uprice = bcdToInt(bcdUprice);
