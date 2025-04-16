@@ -204,7 +204,7 @@ function startSerialPort() {
     let messageDataCounter = 0;
     let nozzleDataCounter = 0;
     let initDisplay = false;
-    let priceDot = 2;
+    let priceDot;
     port.on("data", (data) => {
       buffer += data.toString(); // Gelen veriyi arabelleğe ekle
       if (0) {
@@ -264,10 +264,10 @@ function startSerialPort() {
 
           if (priceDot2.length == 1) {
             isAlert = false;
-            // priceDot = priceDot2;
+            priceDot = priceDot2;
           } else {
             isAlert = true;
-            // priceDot = priceDot2[1];
+            priceDot = priceDot2[1];
           }
 
           let twoDots = receivedData[3];
