@@ -174,6 +174,13 @@ function findLinuxUSB() {
 function startSerialPort() {
   if (port && port.isOpen) {
     console.log("Port zaten açık, yeniden başlatmaya gerek yok.");
+    sendToRenderer("full-screen-container-data", {
+      visibility: 0,
+      texts: {
+        turkish: `Başarıyla bağlandı.`,
+        english: `Successfully connected.`,
+      },
+    });
     return;
   }
   const portName = "/dev/serial0"; // Bağlantı yapılacak seri port ismi
@@ -186,13 +193,6 @@ function startSerialPort() {
       if (retryInterval) {
         clearInterval(retryInterval);
         retryInterval = null;
-        sendToRenderer("full-screen-container-data", {
-          visibility: 0,
-          texts: {
-            turkish: `Başarıyla bağlandı.`,
-            english: `Successfully connected.`,
-          },
-        });
       }
 
       sendToRenderer("full-screen-container-data", {
