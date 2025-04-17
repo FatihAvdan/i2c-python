@@ -217,7 +217,7 @@ function startSerialPort() {
     let priceDot;
     port.on("data", (data) => {
       buffer += data.toString(); // Gelen veriyi arabelleğe ekle
-      if (1) {
+      if (0) {
         // console.log("buffer:", buffer);
         console.log("successCounter:", successCounter);
         console.log("errorCounter:", errorCounter);
