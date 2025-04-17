@@ -55,7 +55,11 @@ app.whenReady().then(() => {
 
   ipcMain.on("write-serial", (event, data) => {
     console.log("write-serial", data);
-    port.write(data);
+    port.write(data, (err) => {
+      if (err) {
+        console.log("write-serial error", err);
+      }
+    });
   });
 });
 
