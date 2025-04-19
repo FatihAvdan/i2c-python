@@ -27,6 +27,9 @@ port.on("data", (data) => {
           if (tempData.length > 0) {
             let stringTempData = tempData.join("");
             let charCode = parseInt(stringTempData, 10);
+            if (charCode == 0) {
+              charCode = "00";
+            }
             if (isNaN(charCode)) {
               charCode = 0;
               console.log("girdim");
