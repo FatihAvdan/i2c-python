@@ -129,11 +129,10 @@ function bcdToInt(bcdList) {
   let result = bcdList;
   for (let i = 0; i < result.length; i++) {
     if (result[i].length == 1) {
-      result[i] = "F" + result[i];
+      result[i] = "0" + result[i];
     }
   }
   result = result.join("");
-  result = result.replaceAll("F", "0");
   if (result.length == 1) {
     result = "0" + result;
   }
@@ -251,6 +250,7 @@ function startSerialPort() {
           const message = buffer.substring(startIdx, endIdx);
           buffer = "";
           let content = message.replace("START18:", "").replace(":END18", "");
+          content = content.replaceAll("F", "0");
           let receivedData = [];
           let tempData = [];
           for (let i = 0; i < content.length; i++) {
@@ -289,10 +289,35 @@ function startSerialPort() {
           twoDots = twoDots.toString();
           const volumeDot = twoDots[0];
           const amountDot = twoDots[1];
-          const bcdAmount = receivedData.slice(6, 10);
-          const bcdVolume = receivedData.slice(11, 14);
-          const bcdUprice = receivedData.slice(15, 18);
+          let bcdAmount = receivedData.slice(6, 10);
+          let newBcdAmount = [];
+          for (let i = 0; i < bcdAmount.length; i++) {
+            let digit = bcdAmount[i].toString();
+            if (digit.length == 1) {
+              digit = "0" + digit;
+            }
+            newBcdAmount.push(digit);
+          }
+          bcdAmount = newBcdAmount;
 
+          let bcdVolume = receivedData.slice(11, 14);
+          let newBcdVolume = [];
+          for (let i = 0; i < bcdVolume.length; i++) {
+            let digit = bcdVolume[i].toString();
+            if (digit.length == 1) {
+              digit = "0" + digit;
+            }
+          }
+          bcdVolume = newBcdVolume;
+          let bcdUprice = receivedData.slice(15, 18);
+          let newBcdUprice = [];
+          for (let i = 0; i < bcdUprice.length; i++) {
+            let digit = bcdUprice[i].toString();
+            if (digit.length == 1) {
+              digit = "0" + digit;
+            }
+          }
+          bcdUprice = newBcdUprice;
           const settingsCurrency = receivedData[4];
           const settingsFormationType = receivedData[5];
           const settingsVolumeUnit = receivedData[10];
