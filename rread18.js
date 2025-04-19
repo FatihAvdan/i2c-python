@@ -66,7 +66,7 @@ port.on("data", (data) => {
       for (let i = 0; i < bcdAmount.length; i++) {
         let digit = bcdAmount[i].toString();
         if (digit.length == 1) {
-          digit = digit + "0";
+          digit = "0" + digit;
         }
         newBcdAmount.push(digit);
       }
