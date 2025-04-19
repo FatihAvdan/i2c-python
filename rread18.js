@@ -59,7 +59,7 @@ port.on("data", (data) => {
 
       let twoDots = receivedData[3];
       twoDots = twoDots.toString();
-      let bcdAmount = receivedData.slice(6, 10);
+      let bcdAmount = receivedData.slice(7, 11);
       let newBcdAmount = [];
       for (let i = 0; i < bcdAmount.length; i++) {
         let digit = bcdAmount[i].toString();
