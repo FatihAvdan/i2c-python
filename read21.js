@@ -73,7 +73,7 @@ port.on("data", (data) => {
         thirdNozzleStatus: thirdNozzleStatus,
         fourthNozzleStatus: fourthNozzleStatus,
       };
-      sendToRenderer("nozzle-data", responseData);
+      console.log("nozzle-data", responseData);
     } catch (err) {
       console.log("nozzle-data error:", err);
     }
