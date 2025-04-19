@@ -42,7 +42,8 @@ app.whenReady().then(() => {
     if (process.platform === "win32") {
       videoPath = await findVideoFile();
     } else {
-      videoPath = findLinuxUSB(); // Linux için özel tarama
+      // videoPath = findLinuxUSB(); // Linux için özel tarama
+      videoPath = await findVideoFile();
     }
     return videoPath;
   });
