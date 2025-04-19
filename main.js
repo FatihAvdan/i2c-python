@@ -355,7 +355,6 @@ function startSerialPort() {
             errorCounter++;
             throw new Error("Message-data receivedData is empty");
           }
-          receivedData = receivedData.slice(1, -1);
           let messageData = receivedData.join("");
           sendToRenderer("message-data", {
             data: messageData,
