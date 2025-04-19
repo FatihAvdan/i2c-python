@@ -63,9 +63,6 @@ port.on("data", (data) => {
       console.log("bcdAmount", bcdAmount);
       let amount = bcdToInt(bcdAmount);
       console.log("amount", amount);
-      let price = formatPrice(amount, priceDot);
-      console.log("price", price);
-      console.log(receivedData);
       console.log(content);
     } catch (err) {
       console.log("price-data error:", err);
