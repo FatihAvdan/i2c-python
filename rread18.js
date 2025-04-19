@@ -59,10 +59,12 @@ port.on("data", (data) => {
 
       let twoDots = receivedData[3];
       twoDots = twoDots.toString();
-      const volumeDot = twoDots[0];
-      const amountDot = twoDots[1];
       const bcdAmount = receivedData.slice(6, 10);
       console.log("bcdAmount", bcdAmount);
+      let amount = bcdToInt(bcdAmount);
+      console.log("amount", amount);
+      let price = formatPrice(amount, priceDot);
+      console.log("price", price);
     } catch (err) {
       console.log("price-data error:", err);
     }
