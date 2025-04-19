@@ -328,7 +328,7 @@ function startSerialPort() {
           volume = formatPrice(volume, volumeDot);
           volume = deleteStartingZeros(volume);
           const uprice = bcdToInt(bcdUprice);
-          const formattedPrice = formatPrice(uprice, priceDot);
+          let formattedPrice = formatPrice(uprice, priceDot);
           formattedPrice = deleteStartingZeros(formattedPrice);
           const sendData = {
             amount: amount,
