@@ -4,20 +4,20 @@ const port = new SerialPort("/dev/serial0", {
   baudRate: 115200,
 });
 let buffer = "";
+let priceDot = 2;
 port.on("open", () => {
   console.log("Port açıldı");
 });
 
 port.on("data", (data) => {
   buffer += data.toString();
-  // console.log(buffer);
-  while (buffer.includes("START26") && buffer.includes("END26")) {
+  while (buffer.includes("START18") && buffer.includes("END18")) {
     try {
-      const startIdx = buffer.indexOf("START26");
-      const endIdx = buffer.indexOf("END26") + 7;
+      const startIdx = buffer.indexOf("START18");
+      const endIdx = buffer.indexOf("END18") + 7;
       const message = buffer.substring(startIdx, endIdx);
       buffer = "";
-      let content = message.replace("START26:", "").replace(":END26", "");
+      let content = message.replace("START18:", "").replace(":END18", "");
       let receivedData = [];
       let tempData = [];
       for (let i = 0; i < content.length; i++) {
@@ -25,12 +25,12 @@ port.on("data", (data) => {
         if (byte === "/") {
           if (tempData.length > 0) {
             let stringTempData = tempData.join("");
-            // hex to charcode
-            let charCode = parseInt(stringTempData, 16);
-            let asciiData = String.fromCharCode(charCode);
-            if (receivedData.length < 25) {
-              receivedData.push(asciiData);
+            let charCode = parseInt(stringTempData, 10);
+            if (isNaN(charCode)) {
+              charCode = 0;
             }
+            // let hexData = charCode.toString(16); // '61'
+            receivedData.push(charCode);
             tempData = [];
           }
         } else {
@@ -38,13 +38,75 @@ port.on("data", (data) => {
         }
       }
       if (receivedData.length == 0) {
-        throw new Error("Message-data receivedData is empty");
+        throw new Error("Price-data receivedData is empty");
       }
-      receivedData = receivedData.slice(1, receivedData.length);
-      let messageData = receivedData.join("");
-      console.log(messageData);
+      let priceDot2 = receivedData[2];
+      priceDot2 = priceDot2.toString();
+      let isAlert;
+
+      if (priceDot2.length == 1) {
+        isAlert = false;
+        priceDot = priceDot2;
+      } else {
+        isAlert = true;
+        priceDot = priceDot2[1];
+      }
+
+      let twoDots = receivedData[3];
+      twoDots = twoDots.toString();
+      const volumeDot = twoDots[0];
+      const amountDot = twoDots[1];
+      const bcdAmount = receivedData.slice(6, 10);
+      const bcdVolume = receivedData.slice(11, 14);
+      const bcdUprice = receivedData.slice(15, 18);
+
+      const settingsCurrency = receivedData[4];
+      const settingsFormationType = receivedData[5];
+      const settingsVolumeUnit = receivedData[10];
+      let amount = bcdToInt(bcdAmount);
+      amount = formatPrice(amount, amountDot);
+      let volume = bcdToInt(bcdVolume);
+      volume = formatPrice(volume, volumeDot);
+      const uprice = bcdToInt(bcdUprice);
+      const formattedPrice = formatPrice(uprice, priceDot);
+
+      const sendData = {
+        amount: amount,
+        volume: volume,
+        price: formattedPrice,
+        isAlert: isAlert,
+        settingsCurrency: settingsCurrency,
+        settingsFormationType: settingsFormationType,
+        settingsVolumeUnit: settingsVolumeUnit,
+      };
+      sendToRenderer("price-data", sendData);
+      successCounter++;
+      priceDataCounter++;
     } catch (err) {
-      console.log("message-data error:", err);
+      console.log("price-data error:", err);
+      errorCounter++;
     }
   }
 });
+function bcdToInt(bcdList) {
+  let result = bcdList;
+  for (let i = 0; i < result.length; i++) {
+    if (result[i].length == 1) {
+      result[i] = "F" + result[i];
+    }
+  }
+  result = result.join("");
+  result = result.replaceAll("F", "0");
+  if (result.length == 1) {
+    result = "0" + result;
+  }
+  return result;
+}
+function formatPrice(price, priceDot) {
+  let priceStr = String(price);
+  priceDot = parseInt(priceDot);
+  if (priceDot > 0 && priceDot < priceStr.length) {
+    priceStr = priceStr.slice(0, -priceDot) + "." + priceStr.slice(-priceDot);
+  }
+  return priceStr;
+}
