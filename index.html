@@ -809,7 +809,7 @@
             productType2.innerText = splitProductTypeText[1];
             // card.style.backgroundColor =
             //   dispenserProductType[data[`${ordinal(i)}ProductType`]].color;
-            card.style.display = "flex";
+            card.classList.remove("hidden-important");
           } else {
             card.style.display = "none";
           }
