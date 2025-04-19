@@ -789,7 +789,62 @@
             thirdNozzleStatus,
             fourthNozzleStatus,
           ];
+          if (nozzleStatus.includes(1)) {
+            const nozzleStatusIndex = nozzleStatus.indexOf(1);
+            // find wich card is active
+            const activeCard = document.getElementById(
+              `${ordinal(nozzleStatusIndex + 1)}-nozzle-card`
+            );
+            activeCard.classList.add("hidden-important");
+            // get all alert cards and display none except index
+            const alertCards = document.querySelectorAll(".alert-card");
+            alertCards.forEach((card, index) => {
+              if (index !== nozzleStatusIndex) {
+                card.style.display = "none";
+              }
+            });
 
+            document
+              .getElementById("amount-field-container")
+              .classList.add("w-100");
+            document
+              .getElementById("amount-field-container")
+              .classList.remove("w-75");
+            selectedNozzleCardContainer.style.display = "flex";
+            selectedNozzleCard.style.backgroundColor =
+              dispenserProductType[
+                data[`${ordinal(nozzleStatusIndex + 1)}ProductType`]
+              ].color;
+            selectedNozzlePrice.innerText =
+              data[`${ordinal(nozzleStatusIndex + 1)}NozzlePrice`];
+
+            const selectedNozzleProductType1 = document.getElementById(
+              `selected-nozzle-product-type1`
+            );
+            const selectedNozzleProductType2 = document.getElementById(
+              `selected-nozzle-product-type2`
+            );
+
+            const productTypeText =
+              dispenserProductType[
+                data[`${ordinal(nozzleStatusIndex + 1)}ProductType`]
+              ].displayName;
+            const splitProductTypeText = productTypeText.split(" - ");
+            selectedNozzleProductType1.innerText = splitProductTypeText[0];
+            selectedNozzleProductType2.innerText = splitProductTypeText[1];
+          } else {
+            const alertCards = document.querySelectorAll(".alert-card");
+            alertCards.forEach((card, index) => {
+              card.style.display = "none";
+            });
+            selectedNozzleCardContainer.style.display = "none";
+            document
+              .getElementById("amount-field-container")
+              .classList.add("w-100");
+            document
+              .getElementById("amount-field-container")
+              .classList.remove("w-75");
+          }
           if (i <= nozzleNumber) {
             // if (nozzleStatus[i - 1] == 0) {
             //   card.style.display = "flex";
@@ -807,15 +862,6 @@
 
             productType1.innerText = splitProductTypeText[0];
             productType2.innerText = splitProductTypeText[1];
-
-            // productType1.innerText =
-            //   dispenserProductType[
-            //     data[`${ordinal(i)}ProductType`]
-            //   ].displayName;
-            //  productType2.innerText =
-            //   dispenserProductType[
-            //     data[`${ordinal(i)}ProductType`]
-            //   ].displayName;
             card.style.backgroundColor =
               dispenserProductType[data[`${ordinal(i)}ProductType`]].color;
           } else {
@@ -824,62 +870,6 @@
         }
 
         // if nozzle status have 1 find the nozzle status index and set the card alert display flex
-        if (nozzleStatus.includes(1)) {
-          const nozzleStatusIndex = nozzleStatus.indexOf(1);
-          // find wich card is active
-          const activeCard = document.getElementById(
-            `${ordinal(nozzleStatusIndex + 1)}-nozzle-card`
-          );
-          activeCard.classList.add("hidden-important");
-          // get all alert cards and display none except index
-          const alertCards = document.querySelectorAll(".alert-card");
-          alertCards.forEach((card, index) => {
-            if (index !== nozzleStatusIndex) {
-              card.style.display = "none";
-            }
-          });
-
-          document
-            .getElementById("amount-field-container")
-            .classList.add("w-100");
-          document
-            .getElementById("amount-field-container")
-            .classList.remove("w-75");
-          selectedNozzleCardContainer.style.display = "flex";
-          selectedNozzleCard.style.backgroundColor =
-            dispenserProductType[
-              data[`${ordinal(nozzleStatusIndex + 1)}ProductType`]
-            ].color;
-          selectedNozzlePrice.innerText =
-            data[`${ordinal(nozzleStatusIndex + 1)}NozzlePrice`];
-
-          const selectedNozzleProductType1 = document.getElementById(
-            `selected-nozzle-product-type1`
-          );
-          const selectedNozzleProductType2 = document.getElementById(
-            `selected-nozzle-product-type2`
-          );
-
-          const productTypeText =
-            dispenserProductType[
-              data[`${ordinal(nozzleStatusIndex + 1)}ProductType`]
-            ].displayName;
-          const splitProductTypeText = productTypeText.split(" - ");
-          selectedNozzleProductType1.innerText = splitProductTypeText[0];
-          selectedNozzleProductType2.innerText = splitProductTypeText[1];
-        } else {
-          const alertCards = document.querySelectorAll(".alert-card");
-          alertCards.forEach((card, index) => {
-            card.style.display = "none";
-          });
-          selectedNozzleCardContainer.style.display = "none";
-          document
-            .getElementById("amount-field-container")
-            .classList.add("w-100");
-          document
-            .getElementById("amount-field-container")
-            .classList.remove("w-75");
-        }
 
         function ordinal(n) {
           return ["first", "second", "third", "fourth"][n - 1];
