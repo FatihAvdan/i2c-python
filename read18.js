@@ -10,12 +10,14 @@ port.on("open", () => {
 
 port.on("data", (data) => {
   buffer += data.toString();
-  console.log(buffer);
+  // console.log(buffer);
   while (buffer.includes("START26") && buffer.includes("END26")) {
     try {
       const startIdx = buffer.indexOf("START26");
       const endIdx = buffer.indexOf("END26") + 7;
       const message = buffer.substring(startIdx, endIdx);
+      console.log(buffer);
+      console.log(message);
       buffer = "";
       let content = message.replace("START26:", "").replace(":END26", "");
       content = content.slice(3, -1);
