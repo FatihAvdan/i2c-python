@@ -79,12 +79,9 @@ port.on("data", (data) => {
         settingsFormationType: settingsFormationType,
         settingsVolumeUnit: settingsVolumeUnit,
       };
-      sendToRenderer("price-data", sendData);
-      successCounter++;
-      priceDataCounter++;
+      console.log("price-data", sendData);
     } catch (err) {
       console.log("price-data error:", err);
-      errorCounter++;
     }
   }
 });
