@@ -424,7 +424,8 @@ function startSerialPort() {
             errorCounter++;
             throw new Error("Nozzle-data receivedData is empty");
           }
-          let checkFirst0x21 = receivedData[0];
+          console.log("content", content);
+          console.log("receivedData", receivedData);
           let responseData;
           let firstNozzlePrice = receivedData.slice(1, 4);
           let secondNozzlePrice = receivedData.slice(4, 7);
