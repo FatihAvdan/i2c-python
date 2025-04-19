@@ -60,6 +60,11 @@ port.on("data", (data) => {
       let twoDots = receivedData[3];
       twoDots = twoDots.toString();
       const bcdAmount = receivedData.slice(7, 11);
+      for (let i = 0; i < bcdAmount.length; i++) {
+        if (bcdAmount[i].length == 1) {
+          bcdAmount[i] = bcdAmount[i].toString() + "0";
+        }
+      }
       console.log("bcdAmount", bcdAmount);
       let amount = bcdToInt(bcdAmount);
       console.log("amount", amount);
