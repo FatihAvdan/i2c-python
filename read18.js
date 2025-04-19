@@ -29,6 +29,7 @@ port.on("data", (data) => {
             let charCode = parseInt(stringTempData, 10);
             if (isNaN(charCode)) {
               charCode = 0;
+              console.log("girdim");
             }
             // let hexData = charCode.toString(16); // '61'
             receivedData.push(charCode);
