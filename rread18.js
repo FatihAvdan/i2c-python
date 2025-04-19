@@ -62,45 +62,7 @@ port.on("data", (data) => {
       const volumeDot = twoDots[0];
       const amountDot = twoDots[1];
       const bcdAmount = receivedData.slice(6, 10);
-      for (let i = 0; i < bcdAmount.length; i++) {
-        if (bcdAmount[i].length == 1) {
-          bcdAmount[i] = "0" + bcdAmount[i];
-          console.log("bcdAmount+", bcdAmount);
-        }
-      }
-      const bcdVolume = receivedData.slice(11, 14);
-      const bcdUprice = receivedData.slice(15, 18);
-
-      const settingsCurrency = receivedData[4];
-      const settingsFormationType = receivedData[5];
-      const settingsVolumeUnit = receivedData[10];
-      //   console.log("content", content);
-      //   console.log("bcdAmount", bcdAmount);
-      let amount = bcdToInt(bcdAmount);
-      console.log("amount", amount);
-      if (amount.length == 7) {
-        console.log(content);
-        console.log(receivedData);
-        console.log("bcdAmount", bcdAmount);
-        console.log("amount", amount);
-      }
-      amount = formatPrice(amount, amountDot);
-      //   console.log("amount2", amount);
-      let volume = bcdToInt(bcdVolume);
-      volume = formatPrice(volume, volumeDot);
-      const uprice = bcdToInt(bcdUprice);
-      const formattedPrice = formatPrice(uprice, priceDot);
-
-      const sendData = {
-        amount: amount,
-        volume: volume,
-        price: formattedPrice,
-        isAlert: isAlert,
-        settingsCurrency: settingsCurrency,
-        settingsFormationType: settingsFormationType,
-        settingsVolumeUnit: settingsVolumeUnit,
-      };
-      //   console.log("price-data", sendData);
+      console.log("bcdAmount", bcdAmount);
     } catch (err) {
       console.log("price-data error:", err);
     }
