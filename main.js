@@ -323,11 +323,13 @@ function startSerialPort() {
           const settingsVolumeUnit = receivedData[10];
           let amount = bcdToInt(bcdAmount);
           amount = formatPrice(amount, amountDot);
+          amount = deleteStartingZeros(amount);
           let volume = bcdToInt(bcdVolume);
           volume = formatPrice(volume, volumeDot);
+          volume = deleteStartingZeros(volume);
           const uprice = bcdToInt(bcdUprice);
           const formattedPrice = formatPrice(uprice, priceDot);
-
+          formattedPrice = deleteStartingZeros(formattedPrice);
           const sendData = {
             amount: amount,
             volume: volume,
@@ -513,4 +515,12 @@ function sendToRenderer(channel, data) {
   } else {
     console.warn(`Render'a mesaj gönderilemedi. Kanal: ${channel}`);
   }
+}
+
+function deleteStartingZeros(data) {
+  let dataStr = String(data);
+  while (dataStr.length > 1 && dataStr[0] === "0") {
+    dataStr = dataStr.substring(1);
+  }
+  return dataStr;
 }
