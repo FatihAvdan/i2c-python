@@ -4,6 +4,7 @@ const port = new SerialPort("/dev/serial0", {
   baudRate: 115200,
 });
 let buffer = "";
+let priceDot = 2;
 port.on("open", () => {
   console.log("Port açıldı");
 });
