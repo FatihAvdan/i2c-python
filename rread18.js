@@ -59,6 +59,8 @@ port.on("data", (data) => {
 
       let twoDots = receivedData[3];
       twoDots = twoDots.toString();
+      const volumeDot = twoDots[0];
+      const amountDot = twoDots[1];
       let bcdAmount = receivedData.slice(6, 10);
       let newBcdAmount = [];
       for (let i = 0; i < bcdAmount.length; i++) {
@@ -71,7 +73,7 @@ port.on("data", (data) => {
       console.log("bcdAmount", newBcdAmount);
       let amount = bcdToInt(newBcdAmount);
       console.log("amount", amount);
-      let price = formatPrice(amount, priceDot);
+      let price = formatPrice(amount, amountDot);
       console.log("price", price);
       console.log(content);
     } catch (err) {
