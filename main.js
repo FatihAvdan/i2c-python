@@ -528,8 +528,8 @@ function sendToRenderer(channel, data) {
 function deleteStartingZeros(data) {
   console.log("data", data);
   let dataStr = String(data);
-  if (dataStr == "0000.00") {
-    return dataStr;
+  if (dataStr == "0000.00" || dataStr == "000000.00") {
+    return "0.00";
   }
   while (dataStr.length > 1 && dataStr[0] === "0") {
     dataStr = dataStr.substring(1);
