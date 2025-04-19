@@ -10,7 +10,6 @@ port.on("open", () => {
 
 port.on("data", (data) => {
   buffer += data.toString();
-  // console.log(buffer);
   while (buffer.includes("START21") && buffer.includes("END21")) {
     try {
       const startIdx = buffer.indexOf("START21");
@@ -74,10 +73,7 @@ port.on("data", (data) => {
         fourthNozzleStatus: fourthNozzleStatus,
       };
       sendToRenderer("nozzle-data", responseData);
-      successCounter++;
-      nozzleDataCounter++;
     } catch (err) {
-      errorCounter++;
       console.log("nozzle-data error:", err);
     }
   }
