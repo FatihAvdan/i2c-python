@@ -18,6 +18,7 @@ port.on("data", (data) => {
       const message = buffer.substring(startIdx, endIdx);
       buffer = "";
       let content = message.replace("START18:", "").replace(":END18", "");
+      content = content.replaceAll("F", "0");
       let receivedData = [];
       let tempData = [];
       for (let i = 0; i < content.length; i++) {
