@@ -98,11 +98,10 @@ function bcdToInt(bcdList) {
   let result = bcdList;
   for (let i = 0; i < result.length; i++) {
     if (result[i].length == 1) {
-      result[i] = "F" + result[i];
+      result[i] = "0" + result[i];
     }
   }
   result = result.join("");
-  result = result.replaceAll("F", "0");
   if (result.length == 1) {
     result = "0" + result;
   }
