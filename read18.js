@@ -68,6 +68,10 @@ port.on("data", (data) => {
       //   console.log("bcdAmount", bcdAmount);
       let amount = bcdToInt(bcdAmount);
       console.log("amount", amount);
+      if (amount.length == 5) {
+        console.log("bcdAmount", bcdAmount);
+        console.log("amount", amount);
+      }
       amount = formatPrice(amount, amountDot);
       //   console.log("amount2", amount);
       let volume = bcdToInt(bcdVolume);
