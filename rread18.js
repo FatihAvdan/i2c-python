@@ -18,7 +18,7 @@ port.on("data", (data) => {
       const message = buffer.substring(startIdx, endIdx);
       buffer = "";
       let content = message.replace("START18:", "").replace(":END18", "");
-      content = content.replaceAll("F", "0");
+      //   content = content.replaceAll("F", "0");
       let receivedData = [];
       let tempData = [];
       for (let i = 0; i < content.length; i++) {
@@ -66,6 +66,7 @@ port.on("data", (data) => {
       let price = formatPrice(amount, priceDot);
       console.log("price", price);
       console.log(receivedData);
+      console.log(content);
     } catch (err) {
       console.log("price-data error:", err);
     }
