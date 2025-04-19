@@ -45,7 +45,7 @@ port.on("data", (data) => {
       if (receivedData.length == 0) {
         throw new Error("Message-data receivedData is empty");
       }
-      receivedData = receivedData.slice(1, -1);
+      // receivedData = receivedData.slice(1, -1);
       let messageData = receivedData.join("");
       console.log(messageData);
     } catch (err) {
