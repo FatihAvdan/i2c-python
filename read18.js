@@ -16,14 +16,17 @@ port.on("data", (data) => {
       const startIdx = buffer.indexOf("START26");
       const endIdx = buffer.indexOf("END26") + 7;
       const message = buffer.substring(startIdx, endIdx);
-      console.log(buffer);
-      console.log(message);
+      console.log("buffer", buffer);
+      console.log("message", message);
       buffer = "";
       let content = message.replace("START26:", "").replace(":END26", "");
+      console.log("content1", content);
       content = content.slice(3, -1);
+      console.log("content2", content);
       if (content[content.length - 1] == "/") {
         content = content.slice(0, -1);
       }
+      console.log("content3", content);
       let receivedData = [];
       let tempData = [];
       for (let i = 0; i < content.length; i++) {
