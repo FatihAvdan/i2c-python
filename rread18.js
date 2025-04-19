@@ -75,7 +75,7 @@ port.on("data", (data) => {
       //   console.log("amount", amount);
       let price = formatPrice(amount, amountDot);
       console.log("price", price);
-      console.log(content);
+      //   console.log(content);
     } catch (err) {
       console.log("price-data error:", err);
     }
