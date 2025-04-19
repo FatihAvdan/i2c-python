@@ -401,6 +401,7 @@ function startSerialPort() {
           const message = buffer.substring(startIdx, endIdx);
           buffer = "";
           let content = message.replace("START21:", "").replace(":END21", "");
+          content = content.replaceAll("F", "0");
           let receivedData = [];
           let tempData = [];
           for (let i = 0; i < content.length; i++) {
