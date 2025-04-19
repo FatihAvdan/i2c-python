@@ -28,7 +28,7 @@ port.on("data", (data) => {
             let stringTempData = tempData.join("");
             let charCode = parseInt(stringTempData, 10);
             if (isNaN(charCode)) {
-              charCode = "00";
+              charCode = 0;
             }
             // let hexData = charCode.toString(16); // '61'
             receivedData.push(charCode);
@@ -58,6 +58,11 @@ port.on("data", (data) => {
       const volumeDot = twoDots[0];
       const amountDot = twoDots[1];
       const bcdAmount = receivedData.slice(6, 10);
+      for (let i = 0; i < bcdAmount.length; i++) {
+        if (bcdAmount[i].length == 1) {
+          bcdAmount[i] = "0" + bcdAmount[i];
+        }
+      }
       const bcdVolume = receivedData.slice(11, 14);
       const bcdUprice = receivedData.slice(15, 18);
 
