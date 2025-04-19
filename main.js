@@ -328,10 +328,6 @@ function startSerialPort() {
           const message = buffer.substring(startIdx, endIdx);
           buffer = "";
           let content = message.replace("START26:", "").replace(":END26", "");
-          content = content.slice(3, -1);
-          if (content[content.length - 1] == "/") {
-            content = content.slice(0, -1);
-          }
           let receivedData = [];
           let tempData = [];
           for (let i = 0; i < content.length; i++) {
