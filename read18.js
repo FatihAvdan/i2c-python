@@ -86,14 +86,17 @@ port.on("data", (data) => {
   }
 });
 function bcdToInt(bcdList) {
+  console.log("bcdList", bcdList);
   let result = bcdList;
   for (let i = 0; i < result.length; i++) {
     if (result[i].length == 1) {
       result[i] = "F" + result[i];
     }
   }
+  console.log("result", result);
   result = result.join("");
   result = result.replaceAll("F", "0");
+  console.log("result2", result);
   if (result.length == 1) {
     result = "0" + result;
   }
