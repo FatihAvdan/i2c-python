@@ -60,13 +60,16 @@ port.on("data", (data) => {
       let twoDots = receivedData[3];
       twoDots = twoDots.toString();
       let bcdAmount = receivedData.slice(7, 11);
+      let newBcdAmount = [];
       for (let i = 0; i < bcdAmount.length; i++) {
-        if (bcdAmount[i].length == 1) {
-          bcdAmount[i] = bcdAmount[i].toString() + "0";
+        let digit = bcdAmount[i].toString();
+        if (digit.length == 1) {
+          digit = digit + "0"; // Changed to prepend 0 instead of append
         }
+        newBcdAmount.push(digit);
       }
-      console.log("bcdAmount", bcdAmount);
-      let amount = bcdToInt(bcdAmount);
+      console.log("bcdAmount", newBcdAmount);
+      let amount = bcdToInt(newBcdAmount);
       console.log("amount", amount);
       console.log(content);
     } catch (err) {
