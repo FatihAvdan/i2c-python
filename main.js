@@ -428,6 +428,7 @@ function startSerialPort() {
           console.log("receivedData", receivedData);
           let responseData;
           let firstNozzlePrice = receivedData.slice(1, 4);
+          console.log("firstNozzlePrice1", firstNozzlePrice);
           let secondNozzlePrice = receivedData.slice(4, 7);
           let thirdNozzlePrice = receivedData.slice(7, 10);
           let fourthNozzlePrice = receivedData.slice(10, 13);
@@ -440,6 +441,8 @@ function startSerialPort() {
           let thirdNozzleStatus = receivedData[19];
           let fourthNozzleStatus = receivedData[20];
           firstNozzlePrice = bcdToInt(firstNozzlePrice);
+          console.log("firstNozzlePrice2", firstNozzlePrice);
+
           secondNozzlePrice = bcdToInt(secondNozzlePrice);
           thirdNozzlePrice = bcdToInt(thirdNozzlePrice);
           fourthNozzlePrice = bcdToInt(fourthNozzlePrice);
@@ -457,7 +460,7 @@ function startSerialPort() {
             thirdNozzleStatus: thirdNozzleStatus,
             fourthNozzleStatus: fourthNozzleStatus,
           };
-          console.log("nozzle-data", responseData);
+          // console.log("nozzle-data", responseData);
           sendToRenderer("nozzle-data", responseData);
           successCounter++;
           nozzleDataCounter++;
