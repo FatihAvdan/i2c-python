@@ -526,6 +526,9 @@ function deleteStartingZeros(data) {
     return "0.00";
   }
   while (dataStr.length > 1 && dataStr[0] === "0") {
+    if (dataStr[1] == ".") {
+      break;
+    }
     dataStr = dataStr.substring(1);
   }
   return dataStr;
