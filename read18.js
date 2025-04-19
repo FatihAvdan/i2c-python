@@ -20,13 +20,13 @@ port.on("data", (data) => {
       console.log("message", message);
       buffer = "";
       let content = message.replace("START26:", "").replace(":END26", "");
-      console.log("content1", content);
-      content = content.slice(3, -1);
-      console.log("content2", content);
-      if (content[content.length - 1] == "/") {
-        content = content.slice(0, -1);
-      }
-      console.log("content3", content);
+      // console.log("content1", content);
+      // content = content.slice(3, -1);
+      // console.log("content2", content);
+      // if (content[content.length - 1] == "/") {
+      //   content = content.slice(0, -1);
+      // }
+      // console.log("content3", content);
       let receivedData = [];
       let tempData = [];
       for (let i = 0; i < content.length; i++) {
