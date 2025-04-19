@@ -61,7 +61,7 @@ port.on("data", (data) => {
       twoDots = twoDots.toString();
       const volumeDot = twoDots[0];
       const amountDot = twoDots[1];
-      const bcdAmount = receivedData.slice(6, 10);
+      const bcdAmount = receivedData.slice(6, 11);
       for (let i = 0; i < bcdAmount.length; i++) {
         if (bcdAmount[i].length == 1) {
           bcdAmount[i] = "0" + bcdAmount[i];
