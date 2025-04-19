@@ -61,6 +61,7 @@ port.on("data", (data) => {
       for (let i = 0; i < bcdAmount.length; i++) {
         if (bcdAmount[i].length == 1) {
           bcdAmount[i] = "0" + bcdAmount[i];
+          console.log("bcdAmount+", bcdAmount);
         }
       }
       const bcdVolume = receivedData.slice(11, 14);
