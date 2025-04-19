@@ -10,7 +10,6 @@ port.on("open", () => {
 
 port.on("data", (data) => {
   buffer += data.toString();
-  console.log(buffer);
 
   while (buffer.includes("START26") && buffer.includes("END26")) {
     try {
