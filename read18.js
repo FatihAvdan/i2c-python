@@ -64,12 +64,12 @@ port.on("data", (data) => {
       const settingsCurrency = receivedData[4];
       const settingsFormationType = receivedData[5];
       const settingsVolumeUnit = receivedData[10];
-      console.log("content", content);
-      console.log("bcdAmount", bcdAmount);
+      //   console.log("content", content);
+      //   console.log("bcdAmount", bcdAmount);
       let amount = bcdToInt(bcdAmount);
       console.log("amount", amount);
       amount = formatPrice(amount, amountDot);
-      console.log("amount2", amount);
+      //   console.log("amount2", amount);
       let volume = bcdToInt(bcdVolume);
       volume = formatPrice(volume, volumeDot);
       const uprice = bcdToInt(bcdUprice);
@@ -84,7 +84,7 @@ port.on("data", (data) => {
         settingsFormationType: settingsFormationType,
         settingsVolumeUnit: settingsVolumeUnit,
       };
-      console.log("price-data", sendData);
+      //   console.log("price-data", sendData);
     } catch (err) {
       console.log("price-data error:", err);
     }
