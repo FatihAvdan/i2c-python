@@ -76,7 +76,6 @@ const dummySender = () => {
     settingsFormationType: 13,
     settingsVolumeUnit: 1,
   };
-  console.log("price-data", priceData);
   sendToRenderer("price-data", priceData);
 
   const messageData = {
@@ -425,11 +424,8 @@ function startSerialPort() {
             errorCounter++;
             throw new Error("Nozzle-data receivedData is empty");
           }
-          console.log("content", content);
-          console.log("receivedData", receivedData);
           let responseData;
           let firstNozzlePrice = receivedData.slice(1, 4);
-          console.log("firstNozzlePrice1", firstNozzlePrice);
           let secondNozzlePrice = receivedData.slice(4, 7);
           let thirdNozzlePrice = receivedData.slice(7, 10);
           let fourthNozzlePrice = receivedData.slice(10, 13);
@@ -442,7 +438,6 @@ function startSerialPort() {
           let thirdNozzleStatus = receivedData[19];
           let fourthNozzleStatus = receivedData[20];
           firstNozzlePrice = bcdToInt(firstNozzlePrice);
-          console.log("firstNozzlePrice2", firstNozzlePrice);
 
           secondNozzlePrice = bcdToInt(secondNozzlePrice);
           thirdNozzlePrice = bcdToInt(thirdNozzlePrice);
