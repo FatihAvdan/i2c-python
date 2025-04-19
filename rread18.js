@@ -64,13 +64,15 @@ port.on("data", (data) => {
       for (let i = 0; i < bcdAmount.length; i++) {
         let digit = bcdAmount[i].toString();
         if (digit.length == 1) {
-          digit = digit + "0"; // Changed to prepend 0 instead of append
+          digit = digit + "0";
         }
         newBcdAmount.push(digit);
       }
       console.log("bcdAmount", newBcdAmount);
       let amount = bcdToInt(newBcdAmount);
       console.log("amount", amount);
+      let price = formatPrice(amount, priceDot);
+      console.log("price", price);
       console.log(content);
     } catch (err) {
       console.log("price-data error:", err);
