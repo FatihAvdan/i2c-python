@@ -189,7 +189,7 @@ function startSerialPort() {
     });
     return;
   }
-  const portName = "/dev/serial0"; // Bağlantı yapılacak seri port ismi
+  const portName = "/dev/ttyS0"; // Bağlantı yapılacak seri port ismi
   // const portName = "COM4"; // Bağlantı yapılacak seri port ismi
   const baudRate = 115200;
 
