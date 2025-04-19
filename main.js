@@ -301,7 +301,6 @@ function startSerialPort() {
           bcdAmount = newBcdAmount;
 
           let bcdVolume = receivedData.slice(11, 14);
-          console.log("bcdVolume", bcdVolume);
           let newBcdVolume = [];
           for (let i = 0; i < bcdVolume.length; i++) {
             let digit = bcdVolume[i].toString();
@@ -327,12 +326,9 @@ function startSerialPort() {
           let amount = bcdToInt(bcdAmount);
           amount = formatPrice(amount, amountDot);
           amount = deleteStartingZeros(amount);
-          console.log("volume1", bcdVolume);
           let volume = bcdToInt(bcdVolume);
           volume = formatPrice(volume, volumeDot);
-          console.log("volume2", volume);
           volume = deleteStartingZeros(volume);
-          console.log("volume3", volume);
           const uprice = bcdToInt(bcdUprice);
           let formattedPrice = formatPrice(uprice, priceDot);
           formattedPrice = deleteStartingZeros(formattedPrice);
@@ -346,7 +342,6 @@ function startSerialPort() {
             settingsVolumeUnit: settingsVolumeUnit,
           };
           sendToRenderer("price-data", sendData);
-          // console.log("price-data", sendData);
           successCounter++;
           priceDataCounter++;
         } catch (err) {
@@ -461,7 +456,7 @@ function startSerialPort() {
             thirdNozzleStatus: thirdNozzleStatus,
             fourthNozzleStatus: fourthNozzleStatus,
           };
-          // console.log("nozzle-data", responseData);
+          console.log("nozzle-data", responseData);
           sendToRenderer("nozzle-data", responseData);
           successCounter++;
           nozzleDataCounter++;
