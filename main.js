@@ -308,6 +308,7 @@ function startSerialPort() {
             if (digit.length == 1) {
               digit = "0" + digit;
             }
+            newBcdVolume.push(digit);
           }
           bcdVolume = newBcdVolume;
           let bcdUprice = receivedData.slice(15, 18);
@@ -317,6 +318,7 @@ function startSerialPort() {
             if (digit.length == 1) {
               digit = "0" + digit;
             }
+            newBcdUprice.push(digit);
           }
           bcdUprice = newBcdUprice;
           const settingsCurrency = receivedData[4];
