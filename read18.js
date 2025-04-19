@@ -78,7 +78,7 @@ port.on("data", (data) => {
       //   console.log("bcdAmount", bcdAmount);
       let amount = bcdToInt(bcdAmount);
       console.log("amount", amount);
-      if (amount.length == 6) {
+      if (amount.length == 7) {
         console.log("bcdAmount", bcdAmount);
         console.log("amount", amount);
       }
