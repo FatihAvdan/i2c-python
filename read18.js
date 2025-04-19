@@ -28,7 +28,7 @@ port.on("data", (data) => {
             let stringTempData = tempData.join("");
             let charCode = parseInt(stringTempData, 10);
             if (isNaN(charCode)) {
-              charCode = 0;
+              charCode = "00";
             }
             // let hexData = charCode.toString(16); // '61'
             receivedData.push(charCode);
