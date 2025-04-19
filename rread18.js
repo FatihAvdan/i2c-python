@@ -70,9 +70,9 @@ port.on("data", (data) => {
         }
         newBcdAmount.push(digit);
       }
-      console.log("bcdAmount", newBcdAmount);
+      //   console.log("bcdAmount", newBcdAmount);
       let amount = bcdToInt(newBcdAmount);
-      console.log("amount", amount);
+      //   console.log("amount", amount);
       let price = formatPrice(amount, amountDot);
       console.log("price", price);
       console.log(content);
