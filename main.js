@@ -301,6 +301,7 @@ function startSerialPort() {
           bcdAmount = newBcdAmount;
 
           let bcdVolume = receivedData.slice(11, 14);
+          console.log("bcdVolume", bcdVolume);
           let newBcdVolume = [];
           for (let i = 0; i < bcdVolume.length; i++) {
             let digit = bcdVolume[i].toString();
